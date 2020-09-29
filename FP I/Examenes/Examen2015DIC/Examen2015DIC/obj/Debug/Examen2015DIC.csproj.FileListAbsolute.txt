@@ -1,0 +1,6 @@
+C:\Users\ampac\Documents\git_Repositorios\UCM_Repos\FP-I-and-FP-II\FP I\Examenes\Examen2015DIC\Examen2015DIC\bin\Debug\Examen2015DIC.exe.config
+C:\Users\ampac\Documents\git_Repositorios\UCM_Repos\FP-I-and-FP-II\FP I\Examenes\Examen2015DIC\Examen2015DIC\bin\Debug\Examen2015DIC.exe
+C:\Users\ampac\Documents\git_Repositorios\UCM_Repos\FP-I-and-FP-II\FP I\Examenes\Examen2015DIC\Examen2015DIC\bin\Debug\Examen2015DIC.pdb
+C:\Users\ampac\Documents\git_Repositorios\UCM_Repos\FP-I-and-FP-II\FP I\Examenes\Examen2015DIC\Examen2015DIC\obj\Debug\Examen2015DIC.csprojAssemblyReference.cache
+C:\Users\ampac\Documents\git_Repositorios\UCM_Repos\FP-I-and-FP-II\FP I\Examenes\Examen2015DIC\Examen2015DIC\obj\Debug\Examen2015DIC.exe
+C:\Users\ampac\Documents\git_Repositorios\UCM_Repos\FP-I-and-FP-II\FP I\Examenes\Examen2015DIC\Examen2015DIC\obj\Debug\Examen2015DIC.pdb
