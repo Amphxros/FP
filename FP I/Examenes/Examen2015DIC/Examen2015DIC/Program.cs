@@ -29,8 +29,7 @@ namespace Examen2015DIC
                 if(pos < 0 || pos > ancho_)
                 {
                     choff = true;
-                    Console.WriteLine("choff");
-           
+             
                 }
                 draw(ancho_, pos, choff);
 
@@ -57,23 +56,27 @@ namespace Examen2015DIC
 
         static void draw(int ancho, int pos, bool choff)
         {
-            for(int i = 0; i <= ancho; i++)
+            if (choff == false)
             {
-                if (choff==false)
+                for (int i = 0; i <= ancho; i++)
                 {
-                    Console.SetCursorPosition(2 * i, Console.CursorTop);
-                    if (i == pos)
-                    {
-                        Console.Write("ºº");
-                    }
-                    else
-                    {
-                        Console.Write(" -");
-                    }
+                   Console.SetCursorPosition(2 * i, Console.CursorTop);
+                   if (i == pos)
+                   {
+                       Console.Write("ºº");
+                   }
+                   else
+                   {
+                       Console.Write(" -");
+                   }
+
                 }
-            
+                Console.WriteLine();
             }
-            Console.WriteLine();
+            else
+            {
+                Console.WriteLine("choff");
+            }
         }
 
     }
