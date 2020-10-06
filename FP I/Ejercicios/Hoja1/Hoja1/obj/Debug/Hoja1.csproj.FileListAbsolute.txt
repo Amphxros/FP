@@ -1,0 +1,6 @@
+C:\Users\ampac\Documents\git_Repositorios\UCM_Repos\FP-I-and-FP-II\FP I\Ejercicios\Hoja1\Hoja1\bin\Debug\Hoja1.exe.config
+C:\Users\ampac\Documents\git_Repositorios\UCM_Repos\FP-I-and-FP-II\FP I\Ejercicios\Hoja1\Hoja1\bin\Debug\Hoja1.exe
+C:\Users\ampac\Documents\git_Repositorios\UCM_Repos\FP-I-and-FP-II\FP I\Ejercicios\Hoja1\Hoja1\bin\Debug\Hoja1.pdb
+C:\Users\ampac\Documents\git_Repositorios\UCM_Repos\FP-I-and-FP-II\FP I\Ejercicios\Hoja1\Hoja1\obj\Debug\Hoja1.csprojAssemblyReference.cache
+C:\Users\ampac\Documents\git_Repositorios\UCM_Repos\FP-I-and-FP-II\FP I\Ejercicios\Hoja1\Hoja1\obj\Debug\Hoja1.exe
+C:\Users\ampac\Documents\git_Repositorios\UCM_Repos\FP-I-and-FP-II\FP I\Ejercicios\Hoja1\Hoja1\obj\Debug\Hoja1.pdb
