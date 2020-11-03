@@ -87,17 +87,21 @@ namespace Hoja5
             int rev = 0;
             int l = n.ToString().Length;
             int cont = 0;
-            
-            while (cont <=l/2 )
-            {
-                int izq =(int) (n / Math.Pow(10, l - cont) % Math.Pow(10, l - cont));
-                int der =(int) (n % Math.Pow(10, cont));
 
-                der =(int)( der * Math.Pow(10, l - cont));
-                izq = (int)(izq * Math.Pow(10, cont));
-                rev += der + izq;
-                cont++;
+            for (int i = 0; i < l / 2; i++)    //para un num aba
+            {
+                int a = (int)(n % Math.Pow(10, i)); // ab-a  nos quedamos con la primera c
+                int b = (int)(n / Math.Pow(10, l - i) % (Math.Pow(10, l - i))); //a-bc  nos quedamos con la ultima a
+
+                a = (int)(a*Math.Pow(10, l - i));
+                b = (int)(b * Math.Pow(10, i-1));
+              
+
+                rev += a + b;
+                n = (int)(n / Math.Pow(10, l - i));
+                n = (int)(n / Math.Pow(10, i));
             }
+
             Console.WriteLine(rev);
 
         }
@@ -113,14 +117,13 @@ namespace Hoja5
 
             int l = n.ToString().Length;
             int cont = 0;
-            for(int i=0; i<l/2; i++)    //para un num aba
+            for(int i=0; i < l/2; i++)    //para un num aba
             {
                 int a = (int)(n % Math.Pow(10,i)); // ab-a  nos quedamos con la primera a
                 int b = (int)(n / Math.Pow(10,l-i)%(Math.Pow(10,l-i))); //a-bc  nos quedamos con la ultima a
                 
                 if (a == b) //sii a==c sumamos cont
                     cont++;
-
             }
 
             if (cont == l / 2) 
