@@ -6,7 +6,7 @@ namespace Hoja5
     {
         static void Main(string[] args)
         {
-            Ejercicio4();
+            Ejercicio6();
         }
         static void Ejercicio1()
         {
@@ -30,7 +30,6 @@ namespace Hoja5
             }
             Console.WriteLine(flag);
         }
-
 
         static void Ejercicio2()
         {
@@ -133,6 +132,61 @@ namespace Hoja5
 
         static void Ejercicio6()
         {
+            int n;
+            do
+            {
+                Console.Write("Introduce un num: ");
+                n = int.Parse(Console.ReadLine());
+            } while (n < 0);
+
+            // div entre 2
+            int r2=n%10;
+            bool b2= (r2 == 0 || r2 == 2 || r2 == 4 || r2 == 6 || r2 == 8);
+            if (b2){
+                Console.WriteLine("es divisible entre 2");
+            }
+
+            // div entre 3
+            int d3=n; 
+            int r3=0;
+
+            while (d3>9)
+            {
+                int s= 0;
+                while (d3 != 0)
+                {
+                    s += d3 % 10;
+                    d3 /= 10;
+                }
+
+                d3 = s;
+            }
+            bool b3 = d3 % 3 == 0; // o si es 0,3,6 o 9
+            if (b3)
+                Console.WriteLine("es div entre 3");
+
+            // div entre 5
+            
+            int r5=r2;
+            bool b5 = n == 5 || n == 0;
+            if (b5)
+            {
+                Console.Write("es div entre 5");
+            }
+            
+            //div 6
+            if(b3&&b2)
+            {
+                Console.WriteLine("es div entre 6");
+            }
+
+            //div 10
+            if(b2 && b5) //tambien se puede comprobar que n%10==0
+            {
+                Console.WriteLine("es div entre 10");
+            }
+
+        
 
         }
     }
