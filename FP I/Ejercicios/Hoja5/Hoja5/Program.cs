@@ -6,7 +6,7 @@ namespace Hoja5
     {
         static void Main(string[] args)
         {
-            Ejercicio6();
+            Ejercicio8();
         }
         static void Ejercicio1()
         {
@@ -185,9 +185,67 @@ namespace Hoja5
             {
                 Console.WriteLine("es div entre 10");
             }
+        }
 
-        
+        static void Ejercicio7()
+        {
+            int n;
+            do
+            {
+                Console.Write("Introduce un num: ");
+                n = int.Parse(Console.ReadLine());
+            } while (n < 0);
+
+            int a=1, b, c;
+
+            while (a <= n)
+            {
+                b = 1;
+                while (b <= n)
+                {
+                    c = 1;
+                    while (c <= n)
+                    {
+                        if (a * a + b * b == c * c)
+                        {
+                            Console.WriteLine(a + "2 " + b + "2 =" + c+"2");
+                            Console.WriteLine((a*a + b*b) +"=" + c*c);
+
+                            Console.WriteLine();
+                        }
+                        c++;
+                    }
+                    b++;
+                }
+                a++;
+            }
+
 
         }
+        
+        static void Ejercicio8()
+        {
+            int n;
+            do
+            {
+                Console.Write("Introduce un num: ");
+                n = int.Parse(Console.ReadLine());
+            } while (n < 0);
+
+            int sol =0;
+            int p = 0; //exponente de la potencia
+            int b=8;
+            while (n > 0)
+            {
+                int r = n % b; //pillamos el resto
+                n = n/ b;  //dividimos
+                sol += r*(int)(Math.Pow(10,p)); // lo colocamos en su potencia conveniente
+                p++; //aumentamos la potencia
+            }
+            
+            Console.WriteLine(sol);
+         
+        }
+
     }
 }
