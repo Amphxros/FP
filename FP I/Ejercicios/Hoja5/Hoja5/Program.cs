@@ -234,7 +234,7 @@ namespace Hoja5
 
             int sol =0;
             int p = 0; //exponente de la potencia
-            int b=8;
+            int b=8; //base
             while (n > 0)
             {
                 int r = n % b; //pillamos el resto
