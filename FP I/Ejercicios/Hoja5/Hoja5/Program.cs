@@ -225,22 +225,29 @@ namespace Hoja5
         
         static void Ejercicio8()
         {
-            int n;
-            do
+            int n, b; //n=numero en base 10, b= base a la que se va a pasar
+           
+            do /// bucle para pedir el num (el do while es para que al menos entre 1 vez)
             {
                 Console.Write("Introduce un num: ");
                 n = int.Parse(Console.ReadLine());
             } while (n < 0);
-
-            int sol =0;
-            int p = 0; //exponente de la potencia
-            int b=8; //base
+           
+            do/// bucle para pedir la base (el do while es para que al menos entre 1 vez)
+            {
+                Console.Write("Introduce una base: ");
+                b = int.Parse(Console.ReadLine());
+            } while (b < 0); 
+            
+            string sol =""; //cadena donde almacenaremos la solucion
+            
             while (n > 0)
             {
                 int r = n % b; //pillamos el resto
                 n = n/ b;  //dividimos
-                sol += r*(int)(Math.Pow(10,p)); // lo colocamos en su potencia conveniente
-                p++; //aumentamos la potencia
+              
+                sol = r + sol ; // lo colocamos en su potencia conveniente
+          
             }
             
             Console.WriteLine(sol);
