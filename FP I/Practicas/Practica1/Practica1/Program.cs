@@ -17,8 +17,8 @@ namespace Practica1
             int jugX=ANCHO/2, jugY=ALTO-1;  //posicion del jugador
             int enemX=ANCHO/2, enemY=2; //pos enemigo
            
-            int bombX=-1, bombY=-1; //proyectil jugador
-            int proX=0, proY=ALTO;  //proyectil enemigo
+            int balaX=-1, balaY=-1; //proyectil jugador
+            int bombaX=-1, bombaY=-1;  //proyectil enemigo
 
             while (!exit) {     // bucle ppal del juego
                 // Input de usuario
@@ -49,10 +49,10 @@ namespace Practica1
                     }
                     else if (dir == "1")    //disparo de una bala
                     {
-                        if (bombY < 0)
+                        if (balaY < 0)
                         {
-                            bombX = jugX;
-                            bombY = jugY - 1;
+                            balaX = jugX;
+                            balaY = jugY - 1;
                         }
                     }
                     else if (dir == "p")    //pausado del juego
@@ -87,32 +87,32 @@ namespace Practica1
                         enemY = aleatorio;
                     }
                     //si no hay bala damos una oprtunidad a disparar
-                    if (proY >= ALTO || proY < 0)
+                    if (bombaY >= ALTO || bombaY < 0)
                     {
                         aleatorio = rnd.Next(-1, 2);        //se genera un num entre -1 y 1 y si es 0 el enemigo dispara
                         if (aleatorio == 0)
                         {
-                            proX = enemX;
-                            proY = enemY + 1;
+                            bombaX = enemX;
+                            bombaY = enemY + 1;
                         }
                     }
-                    //mov bala si hay una bala
-                    if (bombY >= 0)
+                    //actualizamos la bala si hay una bala
+                    if (balaY >= 0)
                     {
-                        bombY--;
+                        balaY--;
                     }
-                    //mov bomba si hay una bomba
-                    if (proY < ALTO)
+                    //actualizamos la bomba si hay una bomba
+                    if (bombaY < ALTO)
                     {
-                        proY++;
+                        bombaY++;
                     }
-                    // Control de colisiones
 
-                    if (jugX == proX && jugY == proY)  //colision jugador-bomba
+                    // Control de colisiones
+                    if (jugX == bombaX && jugY == bombaY)  //colision jugador-bomba
                     {
                         exit = true;
                     }
-                    else if (enemX == bombX && enemY == bombY) //colision enemigo-proyectil
+                    else if (enemX == balaX && enemY == balaY) //colision enemigo-proyectil
                     {
                         exit = true;
                     }
@@ -146,19 +146,19 @@ namespace Practica1
                     Console.ForegroundColor = ConsoleColor.White;
 
                     //bomba del jugador
-                    if (bombY > 0)
+                    if (balaY > 0)          //si hay una bala en pantalla se renderiza
                     {
-                        Console.SetCursorPosition(2 * bombX, bombY);
+                        Console.SetCursorPosition(2 * balaX, balaY);
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.Write("^^");
                         Console.ForegroundColor = ConsoleColor.White;
                     }
 
                     //bomba enem
-                    if (proY < ALTO)
+                    if (bombaY < ALTO)      //si hay una bomba lanzada se renderiza
                     {
                         Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.SetCursorPosition(2 * proX, proY);
+                        Console.SetCursorPosition(2 * bombaX, bombaY);
                         Console.Write("xx");
                         Console.ForegroundColor = ConsoleColor.White;
                     }
