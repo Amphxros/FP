@@ -1,7 +1,6 @@
 ﻿/// Amparo Rubio Bellón
 using System;
 
-
 /// Practica 1 FP
 namespace Practica1
 {
@@ -17,7 +16,7 @@ namespace Practica1
             int jugX=ANCHO/2, jugY=ALTO-1;  //posicion del jugador
             int enemX=ANCHO/2, enemY=2; //pos enemigo
            
-            int balaX=-1, balaY=-1; //proyectil jugador
+            int balaX=0, balaY=-1; //proyectil jugador
             int bombaX=-1, bombaY=-1;  //proyectil enemigo
 
             while (!exit) {     // bucle ppal del juego
@@ -28,26 +27,26 @@ namespace Practica1
                     // procesamiento del input de usuario
                     if (dir == "a")     //movimiento a la izquierda
                     {
-                        if (jugX> 0)
+                        if (jugX> 0 && !paused)
                             jugX--;
                     }
                     else if (dir == "d")//movimiento a la derecha
                     {
-                        if (jugX < ANCHO -1)
+                        if (jugX < ANCHO -1 && !paused)
                             jugX++;
                     }
-                    else if (dir == "w")    //movimiento hacia arriba
+                    else if (dir == "w" && !paused)    //movimiento hacia arriba
                     {
                         if(jugY>0)
                             jugY--;
                     }
-                    else if (dir == "s")    //movimiento hacia abajo
+                    else if (dir == "s" && !paused)    //movimiento hacia abajo
                     {
                         if (jugY < ALTO-1)
                             jugY++;
                        
                     }
-                    else if (dir == "1")    //disparo de una bala
+                    else if (dir == "1" && !paused)    //disparo de una bala
                     {
                         if (balaY < 0)
                         {
@@ -116,6 +115,11 @@ namespace Practica1
                     {
                         exit = true;
                     }
+                    else if (bombaX == balaX && bombaY-1 == balaY && (bombaY<ALTO && balaY>0)) //colision bomba-proyectil
+                    {
+                        balaY = 0;
+                        bombaY = ALTO;
+                    }
 
 
 
@@ -155,7 +159,7 @@ namespace Practica1
                     }
 
                     //bomba enem
-                    if (bombaY < ALTO)      //si hay una bomba lanzada se renderiza
+                    if (bombaY < ALTO && bombaX>0)      //si hay una bomba lanzada se renderiza
                     {
                         Console.ForegroundColor = ConsoleColor.Yellow;
                         Console.SetCursorPosition(2 * bombaX, bombaY);
