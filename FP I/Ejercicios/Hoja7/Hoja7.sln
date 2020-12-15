@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29424.173
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hoja7", "Hoja7\Hoja7.csproj", "{34B6392E-EED3-4020-A100-79B148E1882F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{34B6392E-EED3-4020-A100-79B148E1882F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34B6392E-EED3-4020-A100-79B148E1882F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34B6392E-EED3-4020-A100-79B148E1882F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34B6392E-EED3-4020-A100-79B148E1882F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {944083FB-DF5A-478B-961E-85920968FDDD}
+	EndGlobalSection
+EndGlobal
