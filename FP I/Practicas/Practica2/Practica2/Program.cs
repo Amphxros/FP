@@ -23,8 +23,8 @@ namespace Practica2
             while (!exit_)
             {
                 char c = leeInput();
-
-                exit_ = FinPartida(edificios); //o impacto avion-edificio
+                MueveAvion(c, ref avionX, ref avionY, ANCHO, ref combustible);
+                exit_ = !FinPartida(edificios); //o impacto avion-edificio
 
                 Renderiza(edificios, bombas, avionX, avionY, puntos, combustible);
                 System.Threading.Thread.Sleep(RETARDO);
@@ -136,6 +136,59 @@ namespace Practica2
 
             return cont <= edificios.Length;
         }
+        static int CuentaBombas(int[] bombas)
+        {
+            int cont=0;
+            for(int i = 0; i < bombas.Length; i++)
+            {
+                if (bombas[i] >= 0)
+                    cont++;
+            }
+            return cont;
+        }
+
+        static void MueveBombas(int[] bombas)
+        {
+            for (int i = 0; i < bombas.Length; i++)
+            {
+                if (bombas[i] >= 0)
+                    bombas[i]++;
+            }
+
+        }
+
+        static void MueveAvion(char c, ref int avionX, ref int avionY, int ancho, ref int combustible)
+        {
+            if (combustible > 0)
+            {
+                switch (c)
+                {
+                    case 'a':
+                        avionX -= 3;
+                        combustible--;
+                        break;
+                    case 'w':
+                        avionY--;
+                        combustible--;
+                        break;
+                    case 's':
+                        avionY++;
+                        combustible--;
+                        break;
+                    case 'd':
+                        combustible--;
+                        break;
+                }
+            }
+            avionX--;
+            if (avionX < 0)
+            {
+                avionX = ancho;
+                avionY++;
+            }
+
+        }
+
 
 
     }
