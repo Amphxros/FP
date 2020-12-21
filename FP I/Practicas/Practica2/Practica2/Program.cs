@@ -65,7 +65,7 @@ namespace Practica2
                 bombas[i] = -1;
             }
             avionX = edificios.Length-1;
-            avionY = 0;
+            avionY = ALTO;
             puntos = 0;
             combustible = COMBUSTIBLE;
         }
@@ -105,7 +105,7 @@ namespace Practica2
                 }
             }
 
-            Console.SetCursorPosition(2 * avionX, avionY);
+            Console.SetCursorPosition(2 * avionX, ALTO-avionY);
             Console.BackgroundColor = ConsoleColor.DarkCyan;
             Console.Write("<-");
 
@@ -163,7 +163,7 @@ namespace Practica2
         static bool FinPartida(int[] edificios)
         {
             int cont = 0;
-            while (edificios[cont] <= 0)
+            while (edificios[cont] == 0 && cont<edificios.Length)
                 cont++;
 
             return cont <= edificios.Length;
@@ -173,8 +173,7 @@ namespace Practica2
         {
             if (CuentaBombas(bombas) < MAX_BOMBAS && bombas[avionX] < 0)
             {
-
-                bombas[avionX-1] = avionY;
+                bombas[avionX] = ALTO-avionY;
             }
         }
         static int CuentaBombas(int[] bombas)
@@ -192,11 +191,13 @@ namespace Practica2
             for (int i = 0; i < bombas.Length; i++)
             {
                 if (bombas[i] >= 0)
+                {
                     bombas[i]++;
 
-                if (bombas[i] > ALTO) //si no ha habido colision en ningun edificio y ha llegado al suelo la "elimina"
-                {
-                    bombas[i] = -1;
+                    if (bombas[i] > ALTO) //si no ha habido colision en ningun edificio y ha llegado al suelo la "elimina"
+                    {
+                        bombas[i] = -1;
+                    }
                 }
             }
 
@@ -213,14 +214,14 @@ namespace Practica2
                         combustible--;
                         break;
                     case 'w':
-                        if (avionY > 0)
+                        if (avionY < ALTO)
                         {
-                            avionY--;
+                            avionY++;
                             combustible--;
                         }
                         break;
                     case 's':
-                        avionY++;
+                        avionY--;
                         combustible--;
                         break;
                     case 'd':
@@ -232,7 +233,7 @@ namespace Practica2
             if (avionX-1 < 0)
             {
                 avionX = ancho-1;
-                avionY++;
+                avionY--;
             }
             else
             {
@@ -248,6 +249,25 @@ namespace Practica2
                 {            
                     edificios[i]--;
                     puntos = puntos + 10;
+
+                    int indIzq = i - 1;
+                    int indDer = i + 1;
+
+                    while (indIzq >= 0 && edificios[i] == edificios[indIzq])
+                    {
+                        edificios[indIzq]--;
+                        indIzq--;
+                        puntos += 10;
+                    }
+                    
+                    while (indDer <edificios.Length && edificios[i] == edificios[indDer])
+                    {
+                        edificios[indDer]--;
+                        indIzq++;
+                        puntos += 10;
+                    }
+
+
                     bombas[i] = -1;   
                 }
             }
