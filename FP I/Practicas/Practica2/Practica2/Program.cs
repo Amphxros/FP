@@ -18,16 +18,38 @@ namespace Practica2
             int puntos;
             int combustible;
             bool exit_ = false;
+            bool paused = false;
             Inicializa(edificios, bombas, out avionX, out avionY, out puntos, out combustible);
             Renderiza(edificios, bombas, avionX, avionY, puntos, combustible);
             while (!exit_)
             {
                 char c = leeInput();
-                MueveAvion(c, ref avionX, ref avionY, ANCHO, ref combustible);
-                exit_ = !FinPartida(edificios); //o impacto avion-edificio
 
-                Renderiza(edificios, bombas, avionX, avionY, puntos, combustible);
-                System.Threading.Thread.Sleep(RETARDO);
+                if (c == 'p')
+                {
+                    paused = !paused;
+                }
+
+                if (!paused)
+                {
+                    if (c == 'q')
+                    {
+                        exit_ = true;
+                    }
+                    else
+                    {
+                        MueveAvion(c, ref avionX, ref avionY, ANCHO, ref combustible);
+                        exit_ = !FinPartida(edificios); //o impacto avion-edificio
+
+
+                        Renderiza(edificios, bombas, avionX, avionY, puntos, combustible);
+                        System.Threading.Thread.Sleep(RETARDO);
+                    }
+                }
+                else
+                {
+                    exit_ = c == 'q';
+                }
             }
         }
 
@@ -168,8 +190,11 @@ namespace Practica2
                         combustible--;
                         break;
                     case 'w':
-                        avionY--;
-                        combustible--;
+                        if (avionY > 0)
+                        {
+                            avionY--;
+                            combustible--;
+                        }
                         break;
                     case 's':
                         avionY++;
@@ -188,8 +213,5 @@ namespace Practica2
             }
 
         }
-
-
-
     }
 }
