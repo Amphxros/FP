@@ -38,10 +38,14 @@ namespace Practica2
                     }
                     else
                     {
-                        MueveAvion(c, ref avionX, ref avionY, ANCHO, ref combustible);
                         exit_ = !FinPartida(edificios); //o impacto avion-edificio
-
-
+                        if (c == 'b')
+                        {
+                            LanzamientoBomba(bombas, avionX, avionY);
+                        }
+                        MueveAvion(c, ref avionX, ref avionY, ANCHO, ref combustible);
+                        ColisionBombas(edificios, bombas, ref puntos);
+                        MueveBombas(bombas);
                         Renderiza(edificios, bombas, avionX, avionY, puntos, combustible);
                         System.Threading.Thread.Sleep(RETARDO);
                     }
@@ -56,11 +60,11 @@ namespace Practica2
         static void Inicializa(int[] edificios, int[] bombas, out int avionX, out int avionY, out int puntos, out int combustible)
         {
             for (int i = 0; i < edificios.Length; i++)
+            {
                 edificios[i] = rnd.Next(1, ALTO - 3);
-
-            for (int i = 0; i < bombas.Length; i++)
                 bombas[i] = -1;
-            avionX = ANCHO;
+            }
+            avionX = edificios.Length-1;
             avionY = 0;
             puntos = 0;
             combustible = COMBUSTIBLE;
@@ -71,24 +75,29 @@ namespace Practica2
             Console.Clear();
             ConsoleColor[] colors = (ConsoleColor[])ConsoleColor.GetValues(typeof(ConsoleColor));
 
+            int indColor = 1;
+            
+
             for (int i = 0; i < edificios.Length; i++)
             {
+                indColor++;
+                if (indColor >= colors.Length) //esto quita el negro de la paleta(si no los edificios que deberian ser negros no se verían)
+                {
+                    indColor = 1;
+                }
+                Console.BackgroundColor = colors[indColor]; 
+                
                 for (int j = 0; j < edificios[i]; j++)
                 {
                     Console.SetCursorPosition(2 * i, ALTO - j);
-                    Console.BackgroundColor = colors[i % colors.Length]; //hay que quitar el negro de alguna forma
-                    if (i % colors.Length == 0) //esto quita el negro de la paleta de colores(lo cambia por otro color de la paleta)
-                    {
-                        Console.BackgroundColor = colors[(i + 5) % colors.Length];
-
-                    }
+                  
                     Console.Write("  ");
                 }
             }
 
             for (int i = 0; i < bombas.Length; i++)
             {
-                if (bombas[i] >= 0)
+                if (bombas[i] > 0)
                 {
                     Console.SetCursorPosition(2 * i, bombas[i]);
                     Console.BackgroundColor = colors[4]; //pillamos el rojo
@@ -145,7 +154,8 @@ namespace Practica2
                     case "Q": d = 'q'; break;
                 }
             }
-            while (Console.KeyAvailable) Console.ReadKey().Key.ToString();
+            while (Console.KeyAvailable)
+                (Console.ReadKey(false)).KeyChar.ToString();
             return d;
 
         }
@@ -158,23 +168,36 @@ namespace Practica2
 
             return cont <= edificios.Length;
         }
+
+        static void LanzamientoBomba(int[] bombas, int avionX, int avionY)
+        {
+            if (CuentaBombas(bombas) < MAX_BOMBAS && bombas[avionX] < 0)
+            {
+
+                bombas[avionX-1] = avionY;
+            }
+        }
         static int CuentaBombas(int[] bombas)
         {
-            int cont=0;
-            for(int i = 0; i < bombas.Length; i++)
+            int cont = 0;
+            for (int i = 0; i < bombas.Length; i++)
             {
                 if (bombas[i] >= 0)
                     cont++;
             }
             return cont;
         }
-
         static void MueveBombas(int[] bombas)
         {
             for (int i = 0; i < bombas.Length; i++)
             {
                 if (bombas[i] >= 0)
                     bombas[i]++;
+
+                if (bombas[i] > ALTO) //si no ha habido colision en ningun edificio y ha llegado al suelo la "elimina"
+                {
+                    bombas[i] = -1;
+                }
             }
 
         }
@@ -186,7 +209,7 @@ namespace Practica2
                 switch (c)
                 {
                     case 'a':
-                        avionX -= 3;
+                        avionX -= 2;
                         combustible--;
                         break;
                     case 'w':
@@ -201,17 +224,33 @@ namespace Practica2
                         combustible--;
                         break;
                     case 'd':
+                        avionX += 1;
                         combustible--;
                         break;
                 }
             }
-            avionX--;
-            if (avionX < 0)
+            if (avionX-1 < 0)
             {
-                avionX = ancho;
+                avionX = ancho-1;
                 avionY++;
             }
+            else
+            {
+                avionX--;
+            }
+        }
 
+        static void ColisionBombas(int[] edificios, int[] bombas, ref int puntos)
+        {
+            for (int i = 0; i < edificios.Length; i++)
+            {
+                if (bombas[i]>=0&& bombas[i]== edificios[i])
+                {            
+                    edificios[i]--;
+                    puntos = puntos + 10;
+                    bombas[i] = -1;   
+                }
+            }
         }
     }
 }
