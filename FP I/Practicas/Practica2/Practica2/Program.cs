@@ -14,8 +14,21 @@ namespace Practica2
         
         static void Main(string[] args)
         {
-            int[] edificios = new int[ANCHO]; //array de edificios
-            int[] bombas = new int[ANCHO];  //array de bombas
+            int ancho=ANCHO;
+            if (DEBUG)
+            {
+                do
+                {
+                    Console.Write("Introduce ancho: ");
+                    ancho = int.Parse(Console.ReadLine());
+                } while (ancho <= 0 || ancho >= ANCHO);
+
+
+            }
+
+
+            int[] edificios = new int[ancho]; //array de edificios
+            int[] bombas = new int[ancho];  //array de bombas
             
             int avionX, avionY; //coordenadas del avion
             
@@ -26,8 +39,19 @@ namespace Practica2
             bool paused = false;//booleano de pausado
             
             Inicializa(edificios, bombas, out avionX, out avionY, out puntos, out combustible);
+            
+            if (DEBUG) //ponemos n combustible
+            {
+                do
+                {
+                    Console.Write("Introduce combustible: ");
+                    combustible = int.Parse(Console.ReadLine());
+                } while (combustible<= 0 || combustible >= 100);
+
+
+            }
             Renderiza(edificios, bombas, avionX, avionY, puntos, combustible);
-            while (!exit_ && !FinPartida(edificios)){
+            while (!(exit_ || FinPartida(edificios))){
                 
                 char c = leeInput();
             
@@ -43,15 +67,17 @@ namespace Practica2
                     }
                     else
                     {
+                        //todo lo relacionado con actualizar el juego
                         if (c == 'b')
                         {
                             LanzamientoBomba(bombas, avionX, avionY);
                         }
                        
-                        MueveAvion(c, ref avionX, ref avionY, ANCHO, ref combustible);
+                        MueveAvion(c, ref avionX, ref avionY, ancho, ref combustible);
                         ColisionBombas(edificios, bombas, ref puntos);
                         MueveBombas(bombas);
                         
+                        //renderizado
                         Renderiza(edificios, bombas, avionX, avionY, puntos, combustible);
 
                         exit_ = ColisionAvion(edificios, avionX, avionY); //o impacto avion-edificio
@@ -97,7 +123,7 @@ namespace Practica2
             {
                 indColor++;
                 
-                if (indColor >= colors.Length) //esto quita el negro de la paleta(si no los edificios que deberian ser negros no se verían)
+                if (indColor >= colors.Length) //esto quita el negro de la paleta
                 {
                     indColor = 1;
                 }
@@ -181,7 +207,7 @@ namespace Practica2
         static bool FinPartida(int[] edificios)
         {
             int cont = 0;
-            while (edificios[cont] <= 0 && cont < edificios.Length)
+            while (cont < edificios.Length && edificios[cont] <= 0 )
             {
                 cont++;
             }
