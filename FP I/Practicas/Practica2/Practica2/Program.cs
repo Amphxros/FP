@@ -1,4 +1,4 @@
-﻿//Amparo Rubio Bellon
+﻿// Amparo Rubio Bellon
 using System;
 
 namespace Practica2
@@ -7,51 +7,40 @@ namespace Practica2
     {
         //variables globales
         static Random rnd = new Random(); // generador de números aleatorios
-        
-        const int ANCHO = 30, ALTO = 18, MAX_BOMBAS = 10, COMBUSTIBLE = 15;
+   
+        //constantes
+        const int ANCHO = 30, ALTO = 18, MAX_BOMBAS = 10, COMBUSTIBLE = 15, ALTURA_EDIFICIO=5;
         const int RETARDO = 150;
-        const bool DEBUG = true;
+        const bool DEBUG = false;
         
         static void Main(string[] args)
         {
-            int ancho=ANCHO;
-            if (DEBUG)
+            int ancho=ANCHO; //ancho de la pantalla de juego , nº de edificios y de bombas
+            int avionX, avionY; //coordenadas del avion
+
+            int puntos; //puntuacion
+            int combustible;//combustible
+
+            if (!DEBUG)
             {
                 do
                 {
                     Console.Write("Introduce ancho: ");
                     ancho = int.Parse(Console.ReadLine());
                 } while (ancho <= 0 || ancho >= ANCHO);
-
-
             }
-
-
+           
             int[] edificios = new int[ancho]; //array de edificios
             int[] bombas = new int[ancho];  //array de bombas
-            
-            int avionX, avionY; //coordenadas del avion
-            
-            int puntos; //puntuacion
-            int combustible;//combustible
-
+                      
             bool exit_ = false; //booleano de salida
             bool paused = false;//booleano de pausado
             
             Inicializa(edificios, bombas, out avionX, out avionY, out puntos, out combustible);
-            
-            if (DEBUG) //ponemos n combustible
-            {
-                do
-                {
-                    Console.Write("Introduce combustible: ");
-                    combustible = int.Parse(Console.ReadLine());
-                } while (combustible<= 0 || combustible >= 100);
-
-
-            }
             Renderiza(edificios, bombas, avionX, avionY, puntos, combustible);
-            while (!(exit_ || FinPartida(edificios))){
+
+            //bucle principal
+            while (!exit_ && FinPartida(edificios)){
                 
                 char c = leeInput();
             
@@ -87,12 +76,13 @@ namespace Practica2
                 }
             }
             
-            if (ColisionAvion(edificios, avionX, avionY)) //si impacta dibujamos el punto de impacto
+            if (ColisionAvion(edificios, avionX, avionY)) //si la salida ha sido por un impacto dibujamos el punto de impacto
             {
                 Console.SetCursorPosition(2 * avionX, ALTO - avionY);
                 Console.BackgroundColor = ConsoleColor.DarkRed;
                 Console.Write("><");
                 Console.BackgroundColor = ConsoleColor.Black;
+                Console.Write("boom");
                 Console.SetCursorPosition(0, ALTO + 7);
             }
 
@@ -102,8 +92,14 @@ namespace Practica2
         {
             for (int i = 0; i < edificios.Length; i++)
             {
-                edificios[i] = rnd.Next(1, ALTO - 3);
-                edificios[i] = 3;
+                if (DEBUG)
+                {
+                    edificios[i] = ALTURA_EDIFICIO;
+                }
+                else
+                {
+                    edificios[i] = rnd.Next(1, ALTO - 3);
+                }
                 bombas[i] = -1;
             }
             avionX = edificios.Length-1;
@@ -134,12 +130,20 @@ namespace Practica2
                
                 Console.BackgroundColor = colors[indColor]; 
                
+
                 for (int j = 0; j < edificios[i]; j++)//dibuja los edificios
                 {
                     Console.SetCursorPosition(2 * i, ALTO - j);
                     Console.Write("  ");
                 }
-          
+
+                Console.BackgroundColor = colors[0];
+                if (DEBUG)
+                {
+                    Console.SetCursorPosition(2 * i, ALTO + 1);
+                    Console.Write(" "+edificios[i]);
+                }
+
                 if (bombas[i] > 0) //puesto que el tamaño del array de bombay= tam del array de edificios se puede dibujar en el mismo bucle
                 {
                     Console.SetCursorPosition(2 * i, ALTO-bombas[i]);
@@ -176,6 +180,11 @@ namespace Practica2
                 Console.Write(" ");
             }
             Console.BackgroundColor = ConsoleColor.Black;
+            if (DEBUG) { 
+             
+                Console.WriteLine(avionX + " " + avionY + " ");
+                Console.WriteLine("bombas en pantalla: "+ CuentaBombas(bombas) + " num maximo de bombas: "+ MAX_BOMBAS);
+            }
             
             Console.WriteLine();
         }
@@ -212,7 +221,7 @@ namespace Practica2
                 cont++;
             }
             
-            return cont == edificios.Length-1;
+            return cont < edificios.Length;
         }
 
         static void LanzamientoBomba(int[] bombas, int avionX, int avionY)
@@ -287,30 +296,37 @@ namespace Practica2
             for (int i = 0; i < edificios.Length; i++)
             {
                 if (bombas[i]>=0 && bombas[i]<= edificios[i])
-                {            
+                {
 
-                    int indIzq = i - 1;
-                    int indDer = i + 1;
-
-                    while (indIzq >= 0 && edificios[i] == edificios[indIzq])
-                    {
-                        edificios[indIzq]--;
-                        indIzq--;
-                        puntos += 10;
-                    }
-                    
-                    while (indDer < edificios.Length && edificios[i] == edificios[indDer])
-                    {
-                        edificios[indDer]--;
-                        indDer++;
-                        puntos += 10;
-                    }
-
+                    Impacto(edificios, i, ref puntos);
                     edificios[i]--;
-                    puntos = puntos + 10;
+                    puntos = puntos + 1;
 
                     bombas[i] = -1;   
                 }
+            }
+        }
+
+        static void Impacto(int [] edificios, int i, ref int puntos)
+        {
+
+            int indIzq = i - 1;
+            int indDer = i + 1;
+
+
+            //mover esto a metodo impacto
+            while (indIzq >= 0 && edificios[i] == edificios[indIzq])
+            {
+                edificios[indIzq]--;
+                indIzq--;
+                puntos += 1;
+            }
+
+            while (indDer < edificios.Length && edificios[i] == edificios[indDer])
+            {
+                edificios[indDer]--;
+                indDer++;
+                puntos += 1;
             }
         }
 
