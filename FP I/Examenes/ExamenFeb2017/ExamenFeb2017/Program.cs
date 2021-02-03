@@ -12,7 +12,6 @@ namespace ExamenFeb2017
             bool[] descubiertas = new bool[pal.Length];
             int fallos = 0;
 
-
             for(int i = 0; i < descubiertas.Length; i++)
             {
                 descubiertas[i] = rnd.Next(-1, 2) == 0;
@@ -22,7 +21,10 @@ namespace ExamenFeb2017
             while(!PalabraAcertada(descubiertas)&& fallos < MAX_FALLOS)
             {
                 char c = LeeLetra();
-                DescubreLetras(pal, descubiertas, c, false);
+                bool failed=false;
+                DescubreLetras(pal, descubiertas, c, failed);
+                if (!failed)
+                    fallos++;
                 Muestra(pal, descubiertas, fallos);
             }
         }
@@ -42,6 +44,11 @@ namespace ExamenFeb2017
                     Console.Write("- ");
                 }
             }
+
+            Console.SetCursorPosition(3, 8);
+            Console.Write("fallos " + fallos);
+
+
             Console.WriteLine();
             Console.SetCursorPosition(5, 10);
             Console.Write("Escribe letra: ");
@@ -71,6 +78,7 @@ namespace ExamenFeb2017
                     acierto = true;
                 }
             }
+           
 
           
         }
