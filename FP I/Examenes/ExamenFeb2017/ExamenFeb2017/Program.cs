@@ -22,9 +22,11 @@ namespace ExamenFeb2017
             {
                 char c = LeeLetra();
                 bool failed=false;
-                DescubreLetras(pal, descubiertas, c, failed);
+                DescubreLetras(pal, descubiertas, c, ref failed);
                 if (!failed)
+                {
                     fallos++;
+                }
                 Muestra(pal, descubiertas, fallos);
             }
         }
@@ -68,7 +70,7 @@ namespace ExamenFeb2017
             
             return c;
         }
-        static void DescubreLetras(string pal, bool[] descubiertas, char c, bool acierto)
+        static void DescubreLetras(string pal, bool[] descubiertas, char c, ref bool acierto)
         {
             for(int i = 0; i < descubiertas.Length; i++)
             {
@@ -78,8 +80,6 @@ namespace ExamenFeb2017
                     acierto = true;
                 }
             }
-           
-
           
         }
     }
