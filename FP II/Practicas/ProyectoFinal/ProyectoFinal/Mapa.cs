@@ -28,7 +28,7 @@ namespace ProyectoFinal
             {
                 for (int j = 0; j < tab.GetLength(1); j++)
                 {
-                    tab[i, j].cel = (CellType)rnd.Next(0, 6);
+                    tab[i, j].cel = CellType.Empty;
                 }
             }
         }
@@ -39,31 +39,19 @@ namespace ProyectoFinal
             {
                 for (int j = 0; j < tab.GetLength(1); j++)
                 {
-                    Console.SetCursorPosition(2 * i, j);
+                    Console.SetCursorPosition(2* i, j);
                     switch (tab[i, j].cel)
                     {
                         case CellType.Empty:
+                            Console.BackgroundColor = ConsoleColor.Black;
                             Console.Write("  ");
                             break;
+
                         case CellType.Wall:
                             Console.BackgroundColor = ConsoleColor.DarkBlue;
                             Console.Write("  ");
                             break;
-                        case CellType.Food:
-                            Console.ForegroundColor = ConsoleColor.Yellow;
-                            Console.Write("· ");
-                            Console.BackgroundColor = ConsoleColor.Black;
-
-                            break;
-                        case CellType.PowerUp:
-                            Console.ForegroundColor = ConsoleColor.DarkYellow;
-                            Console.Write("··");
-
-                            break;
-                        case CellType.Prize:
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            Console.Write("# ");
-                            break;
+                        
                     }
                     Console.BackgroundColor = ConsoleColor.Black;
                     Console.ForegroundColor = ConsoleColor.White;
@@ -74,6 +62,8 @@ namespace ProyectoFinal
         public void setCell(int i, int j, CellType c)
         {
             tab[i, j].cel = c;
+            Console.SetCursorPosition(2 * i, j);
+            Console.Write((int)c+ " ");
         }
     }
 
