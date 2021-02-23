@@ -32,48 +32,7 @@ namespace ProyectoFinal
                 }
             }
         }
-        public Mapa(string file)
-        {
-            StreamReader read = new StreamReader("file");
-
-            string s = read.ReadLine();
-            int dimX, dimY;
-            if (s.Length == 2)
-            {
-                dimX = (int)s[0];
-                dimY = (int)s[1];
-            }
-            else
-            {
-                //excepcion
-                throw new Exception("Archivo en formato incorrecto");
-            }
-
-            tab = new Cell[dimX, dimY];
-
-            for(int i = 0; i < dimX; i++)
-            {
-                string line = read.ReadLine();
-                for (int j = 0; j < dimY; j++)
-                {
-                    switch (line[j])
-                    {
-                        case '0':
-                        case '1':
-                        case '2':
-                        case '3':
-                        case '4':
-                        case '5':
-                            tab[i, j].cel = (CellType)((int)line[j]);
-                            break;
-
-                    }
-
-                }
-            }
-        
-        }
-
+     
         public void Render()
         {
             for(int i = 0; i < tab.GetLength(0); i++)
@@ -112,9 +71,9 @@ namespace ProyectoFinal
             }
         }
 
-        public void setCell(int i, int j)
+        public void setCell(int i, int j, CellType c)
         {
-
+            tab[i, j].cel = c;
         }
     }
 
