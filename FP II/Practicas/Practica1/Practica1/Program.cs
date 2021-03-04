@@ -21,6 +21,12 @@ namespace Practica1
         {
             Tablero t = LeeNivel("levels", 1);
             Dibuja(t, 0);
+
+            while(Terminado(t)){
+                Dibuja(t, 0);
+                ProcesaInput(ref t, LeeInput(),"");
+
+            }
         }
         static Tablero LeeNivel(string file,int n)
         {
@@ -71,7 +77,6 @@ namespace Practica1
                     {
                         tab.cas[i, j].tipo = TipoCasilla.Muro;
                     }
-
                 }
 
                 for (int i = 0; i < fils; i++)
@@ -106,16 +111,10 @@ namespace Practica1
                                 break;
                         }
                     }
-
                 }
-              
-
             }
 
-            
-
             return tab;
-
         }
         static void Dibuja(Tablero tab, int mov)
         {
@@ -172,22 +171,104 @@ namespace Practica1
             Console.SetCursorPosition(20,20);
         }
 
-        static bool Siguiente(Coor pos, char dir, Tablero tab, Coor sig)
+        static bool Siguiente(Coor pos, char dir, ref Tablero tab, Coor sig)
         {
+            Coor aux = tab.jug;
+           
+            if(tab.cas[tab.jug.fil, tab.jug.col].caja)
+            {
+
+            }
+
             return false;
+        }
+        static char LeeInput()
+        {
+            char d = ' ';
+            if (Console.KeyAvailable)
+            {
+                string tecla = Console.ReadKey(true).Key.ToString();
+                tecla = tecla.ToUpper(); // conversion a mayúsculas
+                switch (tecla)
+                {
+                    case "LeftArrow": d = 'l'; break;
+                    case "UpArrow": d = 'u'; break;
+                    case "RightArrow": d = 'r'; break;
+                    case "DownArrow": d = 'd'; break;
+                }
+            }
+            while (Console.KeyAvailable)
+                (Console.ReadKey(false)).KeyChar.ToString();
+            return d;
+
         }
         static char Mueve(Tablero tab, char dir)
         {
-            return 'a';
+            switch (dir)
+            {
+                case 'l':
+                    if (tab.jug.fil - 1 < 0 && tab.cas[tab.jug.fil - 1, tab.jug.col].tipo != TipoCasilla.Muro)
+                    {
+                        tab.jug.fil--;
+
+                    }
+                    break;
+
+                case 'u':
+                    if (tab.jug.col - 1 < 0 && tab.cas[tab.jug.fil, tab.jug.col - 1].tipo != TipoCasilla.Muro)
+                    {
+                        tab.jug.col--;
+                    }
+                    break;
+
+                case 'r':
+                    if (tab.jug.fil + 1 > tab.cas.GetLength(0) && tab.cas[tab.jug.fil + 1, tab.jug.col].tipo != TipoCasilla.Muro)
+                    {
+                        tab.jug.fil++;
+                    }
+                    break;
+
+                case 'd':
+                    if (tab.jug.col + 1 > tab.cas.GetLength(1) && tab.cas[tab.jug.fil, tab.jug.col + 1].tipo != TipoCasilla.Muro)
+                    {
+                        tab.jug.col++;
+                    }
+                    break;
+            }
+            return dir;
         }
         static void ProcesaInput(Tablero tab, char dir, string movs)
         {
+            switch (dir)
+            {
+                case 'l':
+                case 'u':
+                case 'r':
+                case 'd':
+                    Mueve(tab, dir);
+                    break;
 
+            }
         }
 
         static bool Terminado(Tablero tab)
         {
-            return false;
+            bool flag = false;
+            int i = 0, j = 0;
+
+            while(i<tab.cas.GetLength(0) && !flag){
+                while (j < tab.cas.GetLength(1) && !flag)
+                {
+                    if(!tab.cas[i,j].caja && tab.cas[i, j].tipo == TipoCasilla.Destino)
+                    {
+                        flag = true;
+                    }
+                    j++;
+                }
+                i++;
+            }
+
+            return !flag;
         }
 
     }
