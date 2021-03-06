@@ -19,15 +19,24 @@ namespace Practica1
     {
         static void Main(string[] args)
         {
-            Tablero t = LeeNivel("levels", 1);
+            bool exit = false;
+            int n = -1;
+            while (n < 4 && !exit)
+            {
 
-            while(!Terminado(t)){
-                char c = LeeInput();
-                ProcesaInput(ref t, c,"");
-                Dibuja(t, 0);
+                Tablero t = LeeNivel("levels", n);
+                while (!Terminado(t) && !exit)
+                {
+                    char c = LeeInput();
+                    if (c == 'q')
+                        exit = true;
+                    ProcesaInput(ref t, c, "");
+                    Dibuja(t, 0);
 
-                System.Threading.Thread.Sleep(100);
+                    System.Threading.Thread.Sleep(100);
 
+                }
+                n++;
             }
         }
         static Tablero LeeNivel(string file,int n)
@@ -195,22 +204,26 @@ namespace Practica1
             switch (dir)
             {
                 case 'l':
-                    sig.col = pos.col - 1;
+                    sig.col=pos.col-1;
+                 
                     break;
                 case 'u':
-                    sig.fil = pos.fil - 1;
+                    sig.fil= pos.fil-1;
+                  
                     break;
                 case 'r':
-                    sig.col = pos.col + 1;
+                    sig.col=pos.col+1;
+                   
                     break;
                 case 'd':
-                    sig.fil = pos.fil + 1;
+                    sig.fil=pos.fil+1;
+                 
                     break;
-               
-
             }
-         
-            return true;
+           
+           
+            return tab.cas[sig.col, sig.fil].tipo != TipoCasilla.Muro;
+            
         }
         static char LeeInput()
         {
@@ -225,7 +238,8 @@ namespace Practica1
                     case "S": d = 'd'; break;
                     case "W": d = 'u'; break;
                     case "D": d = 'r'; break;
-
+                    case "Q": d = 'q'; break;
+                    case "P": d = 'p'; break;
                 }
             }
             while (Console.KeyAvailable)
@@ -235,7 +249,21 @@ namespace Practica1
         }
         static char Mueve(ref Tablero tab, char dir)
         {
-            
+            Coor sig = new Coor();
+            if (Siguiente(tab.jug, dir, tab, out sig))
+            {
+                Coor poscaja=sig;
+                if(!tab.cas[sig.col, sig.fil].caja || tab.cas[sig.col, sig.fil].caja && Siguiente(sig,dir,tab,out poscaja) || (!tab.cas[sig.col, sig.fil].caja && !tab.cas[tab.jug.col, tab.jug.fil].caja))
+                {
+                    tab.jug = sig;
+                    bool tmp = tab.cas[sig.col, sig.fil].caja;
+                    tab.cas[sig.col, sig.fil].caja = tab.cas[poscaja.col, poscaja.fil].caja;
+                    tab.cas[poscaja.col, poscaja.fil].caja = tmp;
+                }
+             
+            }
+          
+          
             return dir;
         }
         static void ProcesaInput(ref Tablero tab, char dir, string movs)
@@ -243,17 +271,13 @@ namespace Practica1
             switch (dir)
             {
                 case 'l':
-                    tab.jug.col--;
-                    break;
                 case 'u':
-                    tab.jug.fil--;
-                    break;
                 case 'r':
-                    tab.jug.col++;
-                    break;
                 case 'd':
-                    tab.jug.fil++;
+                    movs += Mueve(ref tab, dir);
                     break;
+                    
+                
             }
         }
 
