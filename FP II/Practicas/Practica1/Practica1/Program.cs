@@ -20,24 +20,22 @@ namespace Practica1
         static void Main(string[] args)
         {
             bool exit = false;
-            int n = -1;
-            while (n < 4 && !exit)
-            {
-
+            int n = 12;
+            string moves ="";
                 Tablero t = LeeNivel("levels", n);
+                Dibuja(t, 0);
                 while (!Terminado(t) && !exit)
                 {
                     char c = LeeInput();
                     if (c == 'q')
                         exit = true;
-                    ProcesaInput(ref t, c, "");
-                    Dibuja(t, 0);
+                    ProcesaInput(ref t, c,ref moves);
+              
 
-                    System.Threading.Thread.Sleep(100);
+                    System.Threading.Thread.Sleep(300);
 
+             
                 }
-                n++;
-            }
         }
         static Tablero LeeNivel(string file,int n)
         {
@@ -49,7 +47,7 @@ namespace Practica1
                 int cols=0;
                 bool encontrado = false, flag=false; //booleano de encontrar el nivel y bool para encontrar el blanco de linea
                 
-                string[] tmp = new string[15]; //array temporal
+                string[] tmp = new string[100]; //array temporal
 
                 while(!read_.EndOfStream &&  fils<tmp.Length && !flag)
                 {
@@ -66,7 +64,7 @@ namespace Practica1
                         tmp[fils] = read_.ReadLine();
 
                         string[] pals = tmp[fils].Split(' ');
-                        if (pals[0] == "" || pals[0]=="Level")
+                        if (pals[0]=="Level" )
                         {
                             flag = true;
                         }
@@ -130,7 +128,7 @@ namespace Practica1
                                 tab.jug.col = i;
                                 break;
                             //muro
-                            default:
+                            case '#':
                                 tab.cas[i, j].tipo = TipoCasilla.Muro;
                                 tab.cas[i, j].caja = false;
                                 break;
@@ -191,6 +189,10 @@ namespace Practica1
 
             }
 
+            Console.SetCursorPosition(2 * tab.cas.GetLength(0) + 3, 0);
+            Console.Write("moves: " + mov);
+            Console.BackgroundColor = ConsoleColor.Black;
+
             Console.SetCursorPosition(2 * tab.jug.col, tab.jug.fil);
             Console.BackgroundColor = ConsoleColor.Green;
             Console.Write("ºº");
@@ -231,15 +233,14 @@ namespace Practica1
             if (Console.KeyAvailable)
             {
                 string tecla = Console.ReadKey(true).Key.ToString();
-                tecla = tecla.ToUpper(); // conversion a mayúsculas
                 switch (tecla)
                 {
-                    case "A": d = 'l'; break;
-                    case "S": d = 'd'; break;
-                    case "W": d = 'u'; break;
-                    case "D": d = 'r'; break;
-                    case "Q": d = 'q'; break;
-                    case "P": d = 'p'; break;
+                    case "LeftArrow":  d = 'l'; break;
+                    case "DownArrow":  d = 'd'; break;
+                    case "UpArrow":    d = 'u'; break;
+                    case "RightArrow": d = 'r'; break;
+                    case "Q":case "q": d = 'q'; break;
+                    case "P":          d = 'p'; break;
                 }
             }
             while (Console.KeyAvailable)
@@ -249,24 +250,39 @@ namespace Practica1
         }
         static char Mueve(ref Tablero tab, char dir)
         {
+            char c = '.';
             Coor sig = new Coor();
             if (Siguiente(tab.jug, dir, tab, out sig))
             {
                 Coor poscaja=sig;
-                if(!tab.cas[sig.col, sig.fil].caja || tab.cas[sig.col, sig.fil].caja && Siguiente(sig,dir,tab,out poscaja) || (!tab.cas[sig.col, sig.fil].caja && !tab.cas[tab.jug.col, tab.jug.fil].caja))
+                if(!tab.cas[sig.col, sig.fil].caja || tab.cas[sig.col, sig.fil].caja && Siguiente(sig,dir,tab,out poscaja) || (!tab.cas[sig.col, sig.fil].caja || !tab.cas[poscaja.col, poscaja.fil].caja))
                 {
                     tab.jug = sig;
                     bool tmp = tab.cas[sig.col, sig.fil].caja;
                     tab.cas[sig.col, sig.fil].caja = tab.cas[poscaja.col, poscaja.fil].caja;
                     tab.cas[poscaja.col, poscaja.fil].caja = tmp;
+
+                    switch (dir)
+                    {
+                        case 'l':
+                            c = 'R';
+                            break;
+                        case 'u':
+                            c = 'D';
+                            break;
+                        case 'r':
+                            c = 'L';
+                            break;
+                        case 'd':
+                            c = 'U';
+                            break;
+                    }
                 }
              
             }
-          
-          
-            return dir;
+            return c;
         }
-        static void ProcesaInput(ref Tablero tab, char dir, string movs)
+        static void ProcesaInput(ref Tablero tab, char dir, ref string movs)
         {
             switch (dir)
             {
@@ -275,6 +291,7 @@ namespace Practica1
                 case 'r':
                 case 'd':
                     movs += Mueve(ref tab, dir);
+                    Dibuja(tab,movs.Length); //asi solo se renderiza cuando sea necesario
                     break;
                     
                 
