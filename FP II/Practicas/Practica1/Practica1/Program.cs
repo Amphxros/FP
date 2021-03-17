@@ -30,11 +30,8 @@ namespace Practica1
                     if (c == 'q')
                         exit = true;
                     ProcesaInput(ref t, c,ref moves);
-              
-
-                    System.Threading.Thread.Sleep(300);
-
-             
+            
+                    System.Threading.Thread.Sleep(300); 
                 }
         }
         static Tablero LeeNivel(string file,int n)
@@ -255,7 +252,7 @@ namespace Practica1
             if (Siguiente(tab.jug, dir, tab, out sig))
             {
                 Coor poscaja=sig;
-                if(!tab.cas[sig.col, sig.fil].caja || tab.cas[sig.col, sig.fil].caja && Siguiente(sig,dir,tab,out poscaja) || (!tab.cas[sig.col, sig.fil].caja || !tab.cas[poscaja.col, poscaja.fil].caja))
+                if((!tab.cas[sig.col, sig.fil].caja || tab.cas[sig.col, sig.fil].caja && Siguiente(sig,dir,tab,out poscaja)) && !(tab.cas[sig.col, sig.fil].caja && tab.cas[poscaja.col, poscaja.fil].caja))
                 {
                     tab.jug = sig;
                     bool tmp = tab.cas[sig.col, sig.fil].caja;
