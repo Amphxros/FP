@@ -20,19 +20,62 @@ namespace Practica1
         static void Main(string[] args)
         {
             bool exit = false;
-            int n = 12;
-            string moves ="";
-                Tablero t = LeeNivel("levels", n);
-                Dibuja(t, 0);
+            int n = -1;
+            //aqui pediremos entrada para cargar 1 existente o no (en general inicializar cosas)
+            Tablero t = new Tablero();
+            string moves = "";
+            
+                int m = -1;
+                while (m != 0 && m != 1)
+                {
+                    Console.Write("Cargar una partida existente[0] o crear una nueva[1]");
+                    m = int.Parse(Console.ReadLine());
+
+                }
+                if (m == 1)
+                {
+                    t = LeeNivel("levels", n);
+
+                }
+                else
+                {
+                    int l = 0;
+                    do
+                    {
+                        Console.Write("Introduce el nivel a cargar: ");
+                        l = int.Parse(Console.ReadLine());
+
+                    } while (l > 0 && l < 50);
+
+
+                    if (!CargaPartida(l.ToString(), out n, out t, moves))
+                    {
+                        n = 0;
+                        moves = "";
+                        t = LeeNivel("levels", n);
+                    }
+                }
+        
+             while (!exit && n< 50) { 
+               Dibuja(t, 0);
                 while (!Terminado(t) && !exit)
                 {
                     char c = LeeInput();
                     if (c == 'q')
                         exit = true;
-                    ProcesaInput(ref t, c,ref moves);
-            
-                    System.Threading.Thread.Sleep(300); 
+                    else if (c == 's')
+                    {
+                        GuardaPartida(n, t, moves);
+                    }
+                    else
+                    {
+                        ProcesaInput(ref t, c, ref moves);
+                    }
+                    System.Threading.Thread.Sleep(300);
                 }
+                n++;
+                t = LeeNivel("levels", n);
+            }
         }
         static Tablero LeeNivel(string file,int n)
         {
@@ -237,7 +280,8 @@ namespace Practica1
                     case "UpArrow":    d = 'u'; break;
                     case "RightArrow": d = 'r'; break;
                     case "Q":case "q": d = 'q'; break;
-                    case "P":          d = 'p'; break;
+                    case "Z":case "z": d = 'p'; break;
+                    case "S":case "s": d = 's'; break;
                 }
             }
             while (Console.KeyAvailable)
@@ -290,9 +334,152 @@ namespace Practica1
                     movs += Mueve(ref tab, dir);
                     Dibuja(tab,movs.Length); //asi solo se renderiza cuando sea necesario
                     break;
-                    
+                case 'z':
+                    break;
                 
             }
+        }
+
+        static void GuardaPartida(int level, Tablero tab,string moves)
+        {
+            StreamWriter file = new StreamWriter(level.ToString() + ".level");
+            if (file != null)
+            {
+                file.WriteLine("Level " + level);
+                int x = tab.cas.GetLength(0);
+                int y = tab.cas.GetLength(1);
+                file.WriteLine(x + " " + y); //guardamos el tamaño del nivel
+                for (int i = 0; i < y; i++)
+                {
+                    for (int j = 0; j <x; j++) {
+                  
+                        switch (tab.cas[j, i].tipo)
+                        {
+                            case TipoCasilla.Libre:
+                                if (tab.cas[j, i].caja)
+                                {
+                                    file.Write("$");
+                                }
+                                else if(j==tab.jug.col && i == tab.jug.fil)
+                                {
+
+                                    file.Write("@");
+                                }
+                                else
+                                {
+                                    file.Write(" ");
+                                }
+                                break;
+                            case TipoCasilla.Muro:
+                                file.Write("#");
+                                break;
+                            case TipoCasilla.Destino:
+                                if (tab.cas[j, i].caja)
+                                {
+                                    file.Write("*");
+                                }
+                                else if (j == tab.jug.col && i == tab.jug.fil)
+                                {   
+                                    file.Write("+");
+                                }
+                                else
+                                {
+                                    file.Write(".");
+                                }
+                                break;
+                        }
+
+                    }
+                    file.WriteLine();
+                }
+
+                file.WriteLine(moves);
+            }
+            file.Close();
+
+            Console.WriteLine("guardado");
+
+        }
+
+        static bool CargaPartida(string path,out int level, out Tablero tab, string moves)
+        {
+            StreamReader file = new StreamReader(path + ".level");
+            level = 0;
+            tab = new Tablero();
+            if (file != null)
+            {
+                string s = file.ReadLine();
+                string[] line = s.Split(' '); 
+
+                if(line.Length==2 && line[0] == "Level")
+                {
+                    level = int.Parse(line[1]);
+                }
+                else
+                {
+                    return false;
+                }
+
+                s = file.ReadLine();
+                line = s.Split(' ');
+                int x = int.Parse(line[0]);
+                int y = int.Parse(line[1]);
+                tab.cas = new Casilla[x, y];
+                for (int i = 0; i < x; i++)
+                {
+                    s = file.ReadLine();
+                    for (int j = 0; j < s.Length -1; j++)
+                    {
+                        switch (s[j])
+                        {
+                            //casilla destino
+                            case '.':
+                                tab.cas[i, j].tipo = TipoCasilla.Destino;
+                                tab.cas[i, j].caja = false;
+                                break;
+                            case '*':
+                                tab.cas[i, j].tipo = TipoCasilla.Destino;
+                                tab.cas[i, j].caja = true;
+                                break;
+
+                            //casilla libre
+                            case ' ':
+                                tab.cas[i, j].tipo = TipoCasilla.Libre;
+                                tab.cas[i, j].caja = false;
+                                break;
+
+                            case '$':
+                                tab.cas[i, j].tipo = TipoCasilla.Libre;
+                                tab.cas[i, j].caja = true;
+                                break;
+
+                            //jugador
+                            case '@':
+                                tab.cas[i, j].tipo = TipoCasilla.Libre;
+                                tab.jug.fil = j;
+                                tab.jug.col = i;
+                                break;
+                            case '+':
+                                tab.cas[i, j].tipo = TipoCasilla.Destino;
+                                tab.jug.fil = j;
+                                tab.jug.col = i;
+                                break;
+                            //muro
+                            case '#':
+                                tab.cas[i, j].tipo = TipoCasilla.Muro;
+                                tab.cas[i, j].caja = false;
+                                break;
+                        }
+                    }
+                }
+                return true;
+
+            }
+            else
+            {
+                return false;
+            }
+
         }
 
         static bool Terminado(Tablero tab)
