@@ -73,6 +73,7 @@ namespace Practica1
                     }
                     System.Threading.Thread.Sleep(300);
                 }
+                moves = "";
                 n++;
                 t = LeeNivel("levels", n);
             }
@@ -280,7 +281,7 @@ namespace Practica1
                     case "UpArrow":    d = 'u'; break;
                     case "RightArrow": d = 'r'; break;
                     case "Q":case "q": d = 'q'; break;
-                    case "Z":case "z": d = 'p'; break;
+                    case "Z":case "z": d = 'z'; break;
                     case "S":case "s": d = 's'; break;
                 }
             }
@@ -291,32 +292,35 @@ namespace Practica1
         }
         static char Mueve(ref Tablero tab, char dir)
         {
-            char c = '.';
+            char c = ' ';
             Coor sig = new Coor();
             if (Siguiente(tab.jug, dir, tab, out sig))
             {
                 Coor poscaja=sig;
-                if((!tab.cas[sig.col, sig.fil].caja || tab.cas[sig.col, sig.fil].caja && Siguiente(sig,dir,tab,out poscaja)) && !(tab.cas[sig.col, sig.fil].caja && tab.cas[poscaja.col, poscaja.fil].caja))
+                if(!tab.cas[sig.col, sig.fil].caja || (tab.cas[sig.col, sig.fil].caja && Siguiente(sig, dir, tab, out poscaja)) && !(tab.cas[sig.col, sig.fil].caja && tab.cas[poscaja.col, poscaja.fil].caja))
                 {
-                    tab.jug = sig;
-                    bool tmp = tab.cas[sig.col, sig.fil].caja;
-                    tab.cas[sig.col, sig.fil].caja = tab.cas[poscaja.col, poscaja.fil].caja;
-                    tab.cas[poscaja.col, poscaja.fil].caja = tmp;
-
-                    switch (dir)
-                    {
-                        case 'l':
-                            c = 'R';
-                            break;
-                        case 'u':
-                            c = 'D';
-                            break;
-                        case 'r':
-                            c = 'L';
-                            break;
-                        case 'd':
-                            c = 'U';
-                            break;
+                     tab.jug = sig;
+                     c = dir;
+                    
+                    if(tab.cas[sig.col, sig.fil].caja && Siguiente(sig, dir, tab, out poscaja) && !(tab.cas[sig.col, sig.fil].caja && tab.cas[poscaja.col, poscaja.fil].caja)){
+                        bool tmp = tab.cas[sig.col, sig.fil].caja;
+                        tab.cas[sig.col, sig.fil].caja = tab.cas[poscaja.col, poscaja.fil].caja;
+                        tab.cas[poscaja.col, poscaja.fil].caja = tmp;
+                        switch (c)
+                        {
+                            case 'l':
+                                c = 'L';
+                                break;
+                            case 'u':
+                                c = 'U';
+                                break;
+                            case 'r':
+                                c = 'R';
+                                break;
+                            case 'd':
+                                c = 'D';
+                                break;
+                        }
                     }
                 }
              
@@ -333,8 +337,57 @@ namespace Practica1
                 case 'd':
                     movs += Mueve(ref tab, dir);
                     Dibuja(tab,movs.Length); //asi solo se renderiza cuando sea necesario
+
+                    Console.SetCursorPosition(0, 20);
+                    Console.WriteLine(movs);
                     break;
                 case 'z':
+                    if (movs.Length > 0) //si ha habido algun movimiento se deshace
+                    {
+                        string tmp = movs;
+                        char c = tmp[tmp.Length - 1];
+                        Coor caja= new Coor();
+                        switch (c)
+                        {
+                            case 'l':
+                                Mueve(ref tab, 'r');
+                                break;
+                            case 'u':
+                                Mueve(ref tab, 'd');
+                                break;
+                            case 'r':
+                                Mueve(ref tab, 'l');
+                                break;
+                            case 'd':
+                                Mueve(ref tab, 'u');
+                                break;
+
+
+                            case 'L':
+                                Mueve(ref tab, 'r');
+
+                                break;
+                            case 'U':
+                             
+                                Mueve(ref tab, 'd');
+
+                                break;
+                            case 'R':
+
+                                Mueve(ref tab, 'l');
+                                break;
+                            case 'D':
+                                Mueve(ref tab, 'u');
+                                break;
+
+
+                        }
+                        movs = "";
+                        for (int i = 0; i < tmp.Length - 1; i++)
+                            movs += tmp[i];
+
+                        Dibuja(tab, movs.Length); //asi solo se renderiza cuando sea necesario
+                    }
                     break;
                 
             }
