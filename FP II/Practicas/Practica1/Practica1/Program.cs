@@ -347,37 +347,60 @@ namespace Practica1
                         string tmp = movs;
                         char c = tmp[tmp.Length - 1];
                         Coor caja= new Coor();
+                        Coor jug = new Coor();
+                        bool temp;
                         switch (c)
                         {
                             case 'l':
                                 Mueve(ref tab, 'r');
                                 break;
+                            case 'L':
+                                caja = tab.jug;
+                                caja.col -= 1;
+                                jug = tab.jug;
+                                Mueve(ref tab, 'r');
+                                temp = tab.cas[caja.col, caja.fil].caja;
+                                tab.cas[caja.col, caja.fil].caja = tab.cas[jug.col, jug.fil].caja;
+                                tab.cas[jug.col, jug.fil].caja=temp;
+                                break;
                             case 'u':
                                 Mueve(ref tab, 'd');
+                                break;
+                            case 'U':
+                                caja = tab.jug;
+                                caja.fil -= 1;
+                                jug = tab.jug;
+
+                                Mueve(ref tab, 'd');
+                                temp = tab.cas[caja.col, caja.fil].caja;
+                                tab.cas[caja.col, caja.fil].caja = tab.cas[jug.col, jug.fil].caja;
+                                tab.cas[jug.col, jug.fil].caja = temp;
                                 break;
                             case 'r':
                                 Mueve(ref tab, 'l');
                                 break;
+                            case 'R':
+                                caja = tab.jug;
+                                caja = tab.jug;
+                                caja.col += 1;
+                                jug = tab.jug;
+                                Mueve(ref tab, 'l');
+                                temp = tab.cas[caja.col, caja.fil].caja;
+                                tab.cas[caja.col, caja.fil].caja = tab.cas[jug.col, jug.fil].caja;
+                                tab.cas[jug.col, jug.fil].caja = temp;
+                                break;
                             case 'd':
                                 Mueve(ref tab, 'u');
                                 break;
-
-
-                            case 'L':
-                                Mueve(ref tab, 'r');
-
-                                break;
-                            case 'U':
-                             
-                                Mueve(ref tab, 'd');
-
-                                break;
-                            case 'R':
-
-                                Mueve(ref tab, 'l');
-                                break;
                             case 'D':
+                                caja = tab.jug;
+                                caja.fil += 1;
+                                jug = tab.jug;
                                 Mueve(ref tab, 'u');
+                                temp = tab.cas[caja.col, caja.fil].caja;
+                                tab.cas[caja.col, caja.fil].caja = tab.cas[jug.col, jug.fil].caja;
+                                tab.cas[jug.col, jug.fil].caja = temp;
+
                                 break;
 
 
