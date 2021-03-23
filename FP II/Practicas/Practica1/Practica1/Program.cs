@@ -30,16 +30,14 @@ namespace Practica1
                 {
                     Console.Write("Cargar una partida existente[0] o crear una nueva[1]");
                     m = int.Parse(Console.ReadLine());
-
                 }
                 if (m == 1)
                 {
                     t = LeeNivel("levels", n);
-
                 }
                 else
                 {
-                int l;
+                int l; //nivel auxiliar
                     do
                     {
                         Console.Write("Introduce el nivel a cargar: ");
@@ -48,7 +46,8 @@ namespace Practica1
                     } while (l<-1 || l>50);
 
 
-                    if (!CargaPartida(l.ToString(), out n, out t, out moves))
+                n = l;
+                if (!CargaPartida(l.ToString(), out n, out t, out moves))
                     {
                         n = -1;
                         moves = "";
@@ -56,8 +55,8 @@ namespace Practica1
                     }
                 }
         
-             while (!exit && n< 50) { 
-               Dibuja(t, 0);
+             while (!exit && n< 50) { //si no hemos querido salir y todavia hay niveles por pasar
+                Dibuja(t, moves.Length);
                 while (!Terminado(t) && !exit)
                 {
                     char c = LeeInput();
@@ -73,16 +72,20 @@ namespace Practica1
                     }
                     System.Threading.Thread.Sleep(300);
                 }
-                moves = "";
-                n++;
-                t = LeeNivel("levels", n);
+                if (!exit)
+                {
+                    GuardaRecords(n + 1, "records", moves);
+                    moves = "";
+                    n++;
+                    t = LeeNivel("levels", n);
+                }
             }
         }
         static Tablero LeeNivel(string file,int n)
         {
             Tablero tab= new Tablero();
             StreamReader read_ = new StreamReader(file);
-            if (read_ != null)
+            if (File.Exists(file))
             {
                 int fils = 0;
                 int cols=0;
@@ -92,20 +95,20 @@ namespace Practica1
 
                 while(!read_.EndOfStream &&  fils<tmp.Length && !flag)
                 {
-                    if (!encontrado) {
+                    if (!encontrado) { //si no encoontramos el nivel que queremos intentamos leer el titulo
                         string line = read_.ReadLine();
                         string[] pals = line.Split(' ');
-                        if (pals.Length==2 && pals[0]=="Level" && int.Parse(pals[1].ToString())==n)
+                        if (pals.Length==2 && pals[0]=="Level" && int.Parse(pals[1].ToString())==n) // si el titulo coincide con el nivel que queremos hemos encontrado el nivel
                         {
                             encontrado = true;
                         } 
                     }
-                    else
+                    else //si ya hemos encontrado el nivel leemos su contenido y lo guardamos en un array temporal
                     {
                         tmp[fils] = read_.ReadLine();
 
                         string[] pals = tmp[fils].Split(' ');
-                        if (pals[0]=="Level" )
+                        if (pals[0]=="Level" ) //si lo que leemos es un titulo ya hemos terminado de leer el nivel
                         {
                             flag = true;
                         }
@@ -114,24 +117,23 @@ namespace Practica1
                             cols =tmp[fils].Length; 
                         }
 
-                        Console.WriteLine(tmp[fils]);
                         fils++;
                     }
                 }
 
-                tab.cas = new Casilla[fils, cols];
+                //pasamos lo temporal a lo definitivo
+                tab.cas = new Casilla[fils, cols]; 
 
                 for(int i=0; i < fils; i++)
                 {
                     for(int j = 0; j < cols; j++)
                     {
-                        tab.cas[i, j].tipo = TipoCasilla.Muro;
+                        tab.cas[i, j].tipo = TipoCasilla.Muro; //por defecto todo seran muros
                     }
                 }
-
+                //pasamos a lo definitivo dependiend de su char
                 for (int i = 0; i < fils; i++)
                 {
-                   
                     for (int j = 0; j < tmp[i].Length; j++)
                     {
                         switch (tmp[i][j])
@@ -180,6 +182,7 @@ namespace Practica1
 
             return tab;
         }
+        ///Dibuja el tablero en la pantalla
         static void Dibuja(Tablero tab, int mov)
         {
             Console.Clear();
@@ -205,8 +208,9 @@ namespace Practica1
                             }
                             else
                             {
-                                Console.BackgroundColor = ConsoleColor.Black;
+                                Console.BackgroundColor = ConsoleColor.DarkMagenta;
                                  Console.Write("  ");
+                                Console.BackgroundColor = ConsoleColor.Black;
                             }
                             break;
                           case TipoCasilla.Destino:
@@ -217,8 +221,9 @@ namespace Practica1
                               }
                               else
                               {
-                                Console.BackgroundColor = ConsoleColor.Black;
 
+                                Console.BackgroundColor = ConsoleColor.DarkMagenta;
+      
                               }
                                 Console.Write("()");
                                 Console.BackgroundColor = ConsoleColor.Black;
@@ -265,7 +270,7 @@ namespace Practica1
             }
            
            
-            return tab.cas[sig.col, sig.fil].tipo != TipoCasilla.Muro;
+            return tab.cas[sig.col, sig.fil].tipo != TipoCasilla.Muro; //si no hay muro en la siguiente en un principio es una casilla disponible
             
         }
         static char LeeInput()
@@ -280,6 +285,7 @@ namespace Practica1
                     case "DownArrow":  d = 'd'; break;
                     case "UpArrow":    d = 'u'; break;
                     case "RightArrow": d = 'r'; break;
+                  
                     case "Q":case "q": d = 'q'; break;
                     case "Z":case "z": d = 'z'; break;
                     case "S":case "s": d = 's'; break;
@@ -290,6 +296,7 @@ namespace Practica1
             return d;
 
         }
+        //Actualiza la posicion
         static char Mueve(ref Tablero tab, char dir)
         {
             char c = ' ';
@@ -303,6 +310,8 @@ namespace Practica1
                      c = dir;
                     
                     if(tab.cas[sig.col, sig.fil].caja && Siguiente(sig, dir, tab, out poscaja) && !(tab.cas[sig.col, sig.fil].caja && tab.cas[poscaja.col, poscaja.fil].caja)){
+                      
+                        //intercambiamos los booleanos para mover la caja
                         bool tmp = tab.cas[sig.col, sig.fil].caja;
                         tab.cas[sig.col, sig.fil].caja = tab.cas[poscaja.col, poscaja.fil].caja;
                         tab.cas[poscaja.col, poscaja.fil].caja = tmp;
@@ -334,14 +343,12 @@ namespace Practica1
                 case 'l':
                 case 'u':
                 case 'r':
-                case 'd':
+                case 'd': //movemos el jugador
                     movs += Mueve(ref tab, dir);
                     Dibuja(tab,movs.Length); //asi solo se renderiza cuando sea necesario
-
-                    Console.SetCursorPosition(0, 20);
-                    Console.WriteLine(movs);
                     break;
-                case 'z':
+
+                case 'z': //Deshacer movimientos
                     if (movs.Length > 0) //si ha habido algun movimiento se deshace
                     {
                         string tmp = movs;
@@ -473,17 +480,15 @@ namespace Practica1
             }
             file.Close();
 
-            Console.WriteLine("guardado");
-
         }
-
+        //carga la partida level del archivo path
         static bool CargaPartida(string path,out int level, out Tablero tab, out string moves)
         {
             StreamReader file = new StreamReader(path + ".level");
             level = 0;
             tab = new Tablero();
             moves = "";
-            if (file != null)
+            if (File.Exists(path + ".level"))
             {
                 string line = file.ReadLine();
                 string []pals = line.Split(' ');
@@ -553,7 +558,6 @@ namespace Practica1
                         }
                         moves = file.ReadLine();
 
-
                     return true;
                     }
                     return false;
@@ -563,7 +567,6 @@ namespace Practica1
                 {
                     return false;
                 }
-
             }
             else
             {
@@ -572,7 +575,7 @@ namespace Practica1
 
 
         }
-
+        //Determina si un nivel esta terminado cuando hay cajas
         static bool Terminado(Tablero tab)
         {
             bool flag = false;
@@ -594,5 +597,43 @@ namespace Practica1
             return !flag;
         }
 
+        static void GuardaRecords(int n, string path, string moves)
+        {
+            if (File.Exists(path))
+            {
+                string[] records = new string[60];
+                StreamReader read = new StreamReader(path);
+                int index = 0;
+                while (!read.EndOfStream)
+                {
+                    records[index] = read.ReadLine();
+                    index++;
+                }
+                read.Close();
+
+                if (moves.Length < records[n].Length)
+                {
+                    records[n] = moves;
+
+                    File.Delete(path);
+
+                    StreamWriter write = new StreamWriter(path);
+
+                    for(int i = 0; i < index; i++)
+                    {
+                        write.WriteLine(records[i]);
+                    }
+                    write.Close();
+                }
+
+            }
+            else
+            {
+                StreamWriter stream = new StreamWriter(path);
+                stream.WriteLine(moves);
+                stream.Close();
+
+            }
+        }
     }
 }
