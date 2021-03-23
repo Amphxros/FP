@@ -611,7 +611,7 @@ namespace Practica1
                 }
                 read.Close();
 
-                if (moves.Length < records[n].Length)
+                if (!(index<n) || moves.Length < records[n].Length)
                 {
                     records[n] = moves;
 
@@ -625,6 +625,7 @@ namespace Practica1
                     }
                     write.Close();
                 }
+             
 
             }
             else
