@@ -39,18 +39,18 @@ namespace Practica1
                 }
                 else
                 {
-                    int l = 0;
+                int l;
                     do
                     {
                         Console.Write("Introduce el nivel a cargar: ");
                         l = int.Parse(Console.ReadLine());
 
-                    } while (l > 0 && l < 50);
+                    } while (l<-1 || l>50);
 
 
-                    if (!CargaPartida(l.ToString(), out n, out t, moves))
+                    if (!CargaPartida(l.ToString(), out n, out t, out moves))
                     {
-                        n = 0;
+                        n = -1;
                         moves = "";
                         t = LeeNivel("levels", n);
                     }
@@ -477,84 +477,99 @@ namespace Practica1
 
         }
 
-        static bool CargaPartida(string path,out int level, out Tablero tab, string moves)
+        static bool CargaPartida(string path,out int level, out Tablero tab, out string moves)
         {
             StreamReader file = new StreamReader(path + ".level");
             level = 0;
             tab = new Tablero();
+            moves = "";
             if (file != null)
             {
-                string s = file.ReadLine();
-                string[] line = s.Split(' '); 
+                string line = file.ReadLine();
+                string []pals = line.Split(' ');
 
-                if(line.Length==2 && line[0] == "Level")
+                if(pals.Length==2 && pals[0] == "Level")
                 {
-                    level = int.Parse(line[1]);
+                    level = int.Parse(pals[1]);
+
+                    int rows, cols;
+
+                    line = file.ReadLine();
+                    pals = line.Split(' ');
+                    if (pals.Length == 2)
+                    {
+                        cols = int.Parse(pals[0]);
+                        rows = int.Parse(pals[1]);
+
+                        tab.cas = new Casilla[cols, rows];
+
+                        for (int j = 0; j < rows; j++)
+                        {
+                            line = file.ReadLine();
+                            for (int i = 0; i < cols; i++) {
+
+                                switch (line[i])
+                                {
+                                    //casilla destino
+                                    case '.':
+                                        tab.cas[i, j].tipo = TipoCasilla.Destino;
+                                        tab.cas[i, j].caja = false;
+                                        break;
+                                    case '*':
+                                        tab.cas[i, j].tipo = TipoCasilla.Destino;
+                                        tab.cas[i, j].caja = true;
+                                        break;
+
+                                    //casilla libre
+                                    case ' ':
+                                        tab.cas[i, j].tipo = TipoCasilla.Libre;
+                                        tab.cas[i, j].caja = false;
+                                        break;
+
+                                    case '$':
+                                        tab.cas[i, j].tipo = TipoCasilla.Libre;
+                                        tab.cas[i, j].caja = true;
+                                        break;
+
+                                    //jugador
+                                    case '@':
+                                        tab.cas[i, j].tipo = TipoCasilla.Libre;
+                                        tab.jug.fil = j;
+                                        tab.jug.col = i;
+                                        break;
+                                    case '+':
+                                        tab.cas[i, j].tipo = TipoCasilla.Destino;
+                                        tab.jug.fil = j;
+                                        tab.jug.col = i;
+                                        break;
+                                    //muro
+                                    case '#':
+                                        tab.cas[i, j].tipo = TipoCasilla.Muro;
+                                        tab.cas[i, j].caja = false;
+                                        break;
+                                }
+
+                            }
+                        }
+                        moves = file.ReadLine();
+
+
+                    return true;
+                    }
+                    return false;
+
                 }
                 else
                 {
                     return false;
                 }
 
-                s = file.ReadLine();
-                line = s.Split(' ');
-                int x = int.Parse(line[0]);
-                int y = int.Parse(line[1]);
-                tab.cas = new Casilla[x, y];
-                for (int i = 0; i < x; i++)
-                {
-                    s = file.ReadLine();
-                    for (int j = 0; j < s.Length -1; j++)
-                    {
-                        switch (s[j])
-                        {
-                            //casilla destino
-                            case '.':
-                                tab.cas[i, j].tipo = TipoCasilla.Destino;
-                                tab.cas[i, j].caja = false;
-                                break;
-                            case '*':
-                                tab.cas[i, j].tipo = TipoCasilla.Destino;
-                                tab.cas[i, j].caja = true;
-                                break;
-
-                            //casilla libre
-                            case ' ':
-                                tab.cas[i, j].tipo = TipoCasilla.Libre;
-                                tab.cas[i, j].caja = false;
-                                break;
-
-                            case '$':
-                                tab.cas[i, j].tipo = TipoCasilla.Libre;
-                                tab.cas[i, j].caja = true;
-                                break;
-
-                            //jugador
-                            case '@':
-                                tab.cas[i, j].tipo = TipoCasilla.Libre;
-                                tab.jug.fil = j;
-                                tab.jug.col = i;
-                                break;
-                            case '+':
-                                tab.cas[i, j].tipo = TipoCasilla.Destino;
-                                tab.jug.fil = j;
-                                tab.jug.col = i;
-                                break;
-                            //muro
-                            case '#':
-                                tab.cas[i, j].tipo = TipoCasilla.Muro;
-                                tab.cas[i, j].caja = false;
-                                break;
-                        }
-                    }
-                }
-                return true;
-
             }
             else
             {
                 return false;
             }
+
 
         }
 
