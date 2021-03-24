@@ -1,4 +1,5 @@
-﻿using System;
+﻿// Amparo Rubio Bellon
+using System;
 using System.IO;
 
 namespace Practica1
@@ -55,8 +56,11 @@ namespace Practica1
                     }
                 }
         
+            //bucle principal
              while (!exit && n< 50) { //si no hemos querido salir y todavia hay niveles por pasar
-                Dibuja(t, moves.Length);
+                
+                Dibuja(t, moves.Length);    //dibujamos el estado inicial del tablero
+                //bucle del nivel
                 while (!Terminado(t) && !exit)
                 {
                     char c = LeeInput();
@@ -64,20 +68,24 @@ namespace Practica1
                         exit = true;
                     else if (c == 's')
                     {
-                        GuardaPartida(n, t, moves);
+                        GuardaPartida(n, t, moves); //guarda la partida
                     }
                     else
                     {
-                        ProcesaInput(ref t, c, ref moves);
+                        ProcesaInput(ref t, c, ref moves); 
                     }
                     System.Threading.Thread.Sleep(300);
                 }
-                if (!exit)
+                if (!exit) //si hemos pasado el nivel guardamos el record si es un record y cargamos el siguiente
                 {
-                    GuardaRecords(n + 1, "records", moves);
-                    moves = "";
+                    GuardaRecords(n + 1, "records", moves); //el n+1 es porque el primer nivel es -1 y no existe el -1 como posicion en un array
+                    moves = ""; //reseteamos moves
                     n++;
-                    t = LeeNivel("levels", n);
+                    t = LeeNivel("levels", n); //leemos el siguiente nivel
+                }
+                else //si hemos querido salir guardo la partida en caso de que el usuario quiera retomarla mas tarde
+                {
+                    GuardaPartida(n, t, moves);
                 }
             }
         }
@@ -186,6 +194,7 @@ namespace Practica1
         static void Dibuja(Tablero tab, int mov)
         {
             Console.Clear();
+         //dibujamos el tablero
             for(int i = 0; i < tab.cas.GetLength(0); i++)
             {
                 for (int j = 0; j < tab.cas.GetLength(1); j++)
@@ -193,18 +202,18 @@ namespace Practica1
                     Console.SetCursorPosition(2 * i, j);
                       switch (tab.cas[i, j].tipo)
                       {
-                          case TipoCasilla.Muro:
+                        case TipoCasilla.Muro:
                               Console.BackgroundColor = ConsoleColor.DarkCyan;
                               Console.Write("  ");
                               Console.BackgroundColor = ConsoleColor.Black;
                             break;
-                          case TipoCasilla.Libre:
+
+                        case TipoCasilla.Libre:
                             if (tab.cas[i, j].caja)
                             {
                                 Console.BackgroundColor = ConsoleColor.Red;
                                 Console.Write("[]");
                                 Console.BackgroundColor = ConsoleColor.Black;
-
                             }
                             else
                             {
@@ -213,7 +222,8 @@ namespace Practica1
                                 Console.BackgroundColor = ConsoleColor.Black;
                             }
                             break;
-                          case TipoCasilla.Destino:
+                          
+                        case TipoCasilla.Destino:
 
                               if (tab.cas[i, j].caja)
                               {
@@ -221,12 +231,10 @@ namespace Practica1
                               }
                               else
                               {
-
                                 Console.BackgroundColor = ConsoleColor.DarkMagenta;
-      
                               }
-                                Console.Write("()");
-                                Console.BackgroundColor = ConsoleColor.Black;
+                              Console.Write("()");
+                              Console.BackgroundColor = ConsoleColor.Black;
                               break;
                 
                       }
@@ -234,16 +242,17 @@ namespace Practica1
                 }
 
             }
-
-            Console.SetCursorPosition(2 * tab.cas.GetLength(0) + 3, 0);
-            Console.Write("moves: " + mov);
-            Console.BackgroundColor = ConsoleColor.Black;
-
+            //dibujamos al jugador
             Console.SetCursorPosition(2 * tab.jug.col, tab.jug.fil);
             Console.BackgroundColor = ConsoleColor.Green;
             Console.Write("ºº");
             Console.BackgroundColor = ConsoleColor.Black;
           
+            //dibujamos la UI, los movimientos
+            Console.SetCursorPosition(2 * tab.cas.GetLength(0) + 3, 0);
+            Console.Write("moves: " + mov);
+            Console.BackgroundColor = ConsoleColor.Black;
+
         }
 
         static bool Siguiente(Coor pos, char dir, Tablero tab, out Coor sig)
@@ -315,21 +324,7 @@ namespace Practica1
                         bool tmp = tab.cas[sig.col, sig.fil].caja;
                         tab.cas[sig.col, sig.fil].caja = tab.cas[poscaja.col, poscaja.fil].caja;
                         tab.cas[poscaja.col, poscaja.fil].caja = tmp;
-                        switch (c)
-                        {
-                            case 'l':
-                                c = 'L';
-                                break;
-                            case 'u':
-                                c = 'U';
-                                break;
-                            case 'r':
-                                c = 'R';
-                                break;
-                            case 'd':
-                                c = 'D';
-                                break;
-                        }
+                        c = Char.ToUpper(c);
                     }
                 }
              
@@ -348,7 +343,7 @@ namespace Practica1
                     Dibuja(tab,movs.Length); //asi solo se renderiza cuando sea necesario
                     break;
 
-                case 'z': //Deshacer movimientos
+                case 'z': //Deshacemos movimientos
                     if (movs.Length > 0) //si ha habido algun movimiento se deshace
                     {
                         string tmp = movs;
@@ -356,53 +351,50 @@ namespace Practica1
                         Coor caja= new Coor();
                         Coor jug = new Coor();
                         bool temp;
+
+                        caja = tab.jug;
+                        jug = tab.jug;
+
                         switch (c)
                         {
+                            //realizamos el movimiento opuesto sin problema
                             case 'l':
                                 Mueve(ref tab, 'r');
                                 break;
+                            case 'u':
+                                Mueve(ref tab, 'd');
+                                break;
+                            case 'r':
+                                Mueve(ref tab, 'l');
+                                break;
+                            case 'd':
+                                Mueve(ref tab, 'u');
+                                break;
+
+                            //si hemos movido cajas toca deshacer ese movimiento
                             case 'L':
-                                caja = tab.jug;
                                 caja.col -= 1;
-                                jug = tab.jug;
                                 Mueve(ref tab, 'r');
                                 temp = tab.cas[caja.col, caja.fil].caja;
                                 tab.cas[caja.col, caja.fil].caja = tab.cas[jug.col, jug.fil].caja;
                                 tab.cas[jug.col, jug.fil].caja=temp;
                                 break;
-                            case 'u':
-                                Mueve(ref tab, 'd');
-                                break;
                             case 'U':
-                                caja = tab.jug;
                                 caja.fil -= 1;
-                                jug = tab.jug;
-
                                 Mueve(ref tab, 'd');
                                 temp = tab.cas[caja.col, caja.fil].caja;
                                 tab.cas[caja.col, caja.fil].caja = tab.cas[jug.col, jug.fil].caja;
                                 tab.cas[jug.col, jug.fil].caja = temp;
-                                break;
-                            case 'r':
-                                Mueve(ref tab, 'l');
                                 break;
                             case 'R':
-                                caja = tab.jug;
-                                caja = tab.jug;
                                 caja.col += 1;
-                                jug = tab.jug;
                                 Mueve(ref tab, 'l');
                                 temp = tab.cas[caja.col, caja.fil].caja;
                                 tab.cas[caja.col, caja.fil].caja = tab.cas[jug.col, jug.fil].caja;
                                 tab.cas[jug.col, jug.fil].caja = temp;
                                 break;
-                            case 'd':
-                                Mueve(ref tab, 'u');
-                                break;
                             case 'D':
-                                caja = tab.jug;
                                 caja.fil += 1;
-                                jug = tab.jug;
                                 Mueve(ref tab, 'u');
                                 temp = tab.cas[caja.col, caja.fil].caja;
                                 tab.cas[caja.col, caja.fil].caja = tab.cas[jug.col, jug.fil].caja;
@@ -412,8 +404,8 @@ namespace Practica1
 
 
                         }
-                        movs = "";
-                        for (int i = 0; i < tmp.Length - 1; i++)
+                        movs = ""; //reseteamos
+                        for (int i = 0; i < tmp.Length - 1; i++) //volcamos el auxiliar (todo menos el ultimo char que hemos quitado)
                             movs += tmp[i];
 
                         Dibuja(tab, movs.Length); //asi solo se renderiza cuando sea necesario
@@ -425,7 +417,7 @@ namespace Practica1
 
         static void GuardaPartida(int level, Tablero tab,string moves)
         {
-            StreamWriter file = new StreamWriter(level.ToString() + ".level");
+            StreamWriter file = new StreamWriter(level.ToString());
             if (file != null)
             {
                 file.WriteLine("Level " + level);
@@ -484,7 +476,7 @@ namespace Practica1
         //carga la partida level del archivo path
         static bool CargaPartida(string path,out int level, out Tablero tab, out string moves)
         {
-            StreamReader file = new StreamReader(path + ".level");
+            StreamReader file = new StreamReader(path);
             level = 0;
             tab = new Tablero();
             moves = "";
@@ -497,7 +489,7 @@ namespace Practica1
                 {
                     level = int.Parse(pals[1]);
 
-                    int rows, cols;
+                    int rows, cols; //filas y columnas
 
                     line = file.ReadLine();
                     pals = line.Split(' ');
@@ -597,13 +589,14 @@ namespace Practica1
             return !flag;
         }
 
+        //guarda en path el record moves si no existe record en ese nivel o si es menor numero de movs que el recrd de ese nivel
         static void GuardaRecords(int n, string path, string moves)
         {
-            if (File.Exists(path))
+            if (File.Exists(path)) //si existe lo cargamos 
             {
-                string[] records = new string[60];
+                string[] records = new string[60]; //array aux donde cargamos el contenido del archivo
                 StreamReader read = new StreamReader(path);
-                int index = 0;
+                int index = 0; //indice del tamaño real del archivo
                 while (!read.EndOfStream)
                 {
                     records[index] = read.ReadLine();
@@ -615,7 +608,7 @@ namespace Practica1
                 {
                     records[n] = moves;
 
-                    File.Delete(path);
+                    File.Delete(path); //sobreescribimos el archivo borrandolo y volviendo a crear
 
                     StreamWriter write = new StreamWriter(path);
 
