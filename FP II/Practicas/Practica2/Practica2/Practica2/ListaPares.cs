@@ -12,6 +12,21 @@ namespace Practica2
         {
 
         }
+        
+    }
 
+    class Nodo
+    {
+        Coord c_;
+        Nodo sig;
+        public Nodo(Coord c)
+        {
+            c_ = c;
+        }
+        public Coord GetCoord()
+        {
+            return c_;
+        }
+       
     }
 }
