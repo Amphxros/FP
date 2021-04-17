@@ -94,7 +94,7 @@ namespace Practica2
             {
                 for(int j=0;j<dimX; j++)
                 {
-                    Console.SetCursorPosition(11+ (2* i), 5+( 2*j));
+                    Console.SetCursorPosition((2* i), ( 2*j));
                     switch (cas[j, i])
                     {
                         case Casilla.MuroCelda:
@@ -129,7 +129,7 @@ namespace Practica2
             
             for(int i = 0; i < pers.Length; i++)
             {
-                Console.SetCursorPosition(11+(2*pers[i].pos.fil), 5+( 2*pers[i].pos.col));
+                Console.SetCursorPosition((2*pers[i].pos.fil), ( 2*pers[i].pos.col));
 
                 Console.BackgroundColor = colorsbg[0];
                 if (i == (int)(Character.Pacman))
@@ -148,16 +148,18 @@ namespace Practica2
             Console.BackgroundColor = ConsoleColor.Black;
             if (DEBUG)
             {
-            Console.SetCursorPosition(0, 5); ;
+            Console.SetCursorPosition(4* dimX +2, 3); ;
             Console.WriteLine(" DEBUG ");
                 for (int i = 0; i < pers.Length; i++)
                 {
+                    Console.SetCursorPosition(4*dimX + 2, 5+ 2*i); ;
 
                     Console.ForegroundColor = colors[i];
                    
-                    Console.WriteLine(" pos: " + pers[i].pos.col + " " + pers[i].pos.fil);
-                    Console.WriteLine(" dir: " + pers[i].dir.col + " " + pers[i].dir.fil);
-                    Console.WriteLine();
+                    Console.Write(" pos: " + pers[i].pos.col + " " + pers[i].pos.fil);
+                    Console.SetCursorPosition(4 * dimX + 2, 5 + 2 * i + 1); ;
+                    Console.Write(" dir: " + pers[i].dir.col + " " + pers[i].dir.fil);
+                
                 }
             }
 
@@ -168,22 +170,22 @@ namespace Practica2
 
             newPos = pos + dir;
 
-            if (newPos.fil > cas.GetLength(0))
+            if (newPos.fil >= cas.GetLength(0))
             {
                 newPos.fil = 0;
             }
-            else if (newPos.fil < 0)
+            else if (newPos.fil <= 0)
             {
-                newPos.fil = cas.GetLength(0);
+                newPos.fil = cas.GetLength(0)-1;
             }
 
-            if (newPos.col > cas.GetLength(1))
+            if (newPos.col >= cas.GetLength(1))
             {
                 newPos.col = 0;
             }
-            else if (newPos.col < 0)
+            else if (newPos.col <= 0)
             {
-                newPos.col = cas.GetLength(1);
+                newPos.col = cas.GetLength(1)-1;
             }
 
             if (cas[newPos.fil, newPos.col] != Casilla.Muro)
@@ -199,9 +201,9 @@ namespace Practica2
 
             if(Siguiente(pers[(int)Character.Pacman].pos, pers[(int)Character.Pacman].dir, out next))
             {
+                cas[pers[0].pos.fil, pers[0].pos.col] = Casilla.Libre;
                 pers[(int)Character.Pacman].pos = next;
 
-                cas[pers[(int)Character.Pacman].pos.fil, pers[(int)Character.Pacman].pos.col] = Casilla.Libre;
             }
         }
 
@@ -212,26 +214,26 @@ namespace Practica2
             switch (c)
             {
                 case 'l':
-                    d.col=-1;
-                    d.fil = 0;
+                    d.fil=-1;
+                    d.col = 0;
                     MuevePacman();
                     break;
              
                 case 'u':
-                    d.fil = -1;
-                    d.col = 0;
-                    MuevePacman();
-                    break;
-                    
-                case 'r':
-                    d.col = 1;
-
+                    d.col = -1;
                     d.fil = 0;
                     MuevePacman();
                     break;
                     
-                case 'd':
+                case 'r':
                     d.fil = 1;
+
+                    d.col = 0;
+                    MuevePacman();
+                    break;
+                    
+                case 'd':
+                    d.col = 1;
                     d.fil = 0;
                     MuevePacman();
                     break;

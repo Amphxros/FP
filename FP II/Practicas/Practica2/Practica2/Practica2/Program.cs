@@ -7,7 +7,7 @@ namespace Practica2
     {
         static void Main(string[] args)
         {
-            Tablero t = new Tablero("Levels/level01.dat");
+            Tablero t = new Tablero("Levels/level00.dat");
 
             t.Dibuja();
             int lap = 2; // retardo para bucle ppal
@@ -20,7 +20,7 @@ namespace Practica2
                 // procesamiento del input
                 if (c != ' ' && t.CambiaDir(c)) { 
                     c = ' ';
-
+                }
                 exit = c == 'q';
                 t.MuevePacman();
                 // IA de los fantasmas: TODO
@@ -28,7 +28,6 @@ namespace Practica2
 
                 // rederizado
                 t.Dibuja();
-                }
                 // retardo
                 System.Threading.Thread.Sleep(lap);
 
