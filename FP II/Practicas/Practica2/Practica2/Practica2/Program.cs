@@ -1,4 +1,5 @@
 ﻿//Amparo Rubio Bellon
+
 using System;
 
 namespace Practica2
@@ -29,7 +30,7 @@ namespace Practica2
                 // rederizado
                 t.Dibuja();
                 // retardo
-                System.Threading.Thread.Sleep(lap);
+                System.Threading.Thread.Sleep(10*lap);
 
             }
             }

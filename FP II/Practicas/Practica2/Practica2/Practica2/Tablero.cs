@@ -12,11 +12,12 @@ namespace Practica2
         enum Casilla {Libre,Muro,Comida,Vitamina, MuroCelda}
         Casilla[,] cas;
 
-        enum Character { Pacman, Fantasma1,Fantasma2,Fantasma3,Fantasma4} //enum que simplemente me hace esto mas accesible
         struct Personaje
         {
             public Coord pos, dir, // posicion y direccion actual
             ini; // posicion inicial (para fantasmas)
+
+            ListaPares lst; //para acumular direcciones
         }
         Personaje[] pers;
         // colores para los personajes
@@ -42,7 +43,7 @@ namespace Practica2
                     {
                         int t = (int)Char.GetNumericValue(s[i]);
                         temp[i, h] = t;
-                        if (t >= 5)
+                        if (t >= 5 && t<10)
                         {
                             num_char++;
                         }
@@ -52,7 +53,7 @@ namespace Practica2
                 }
 
                 cas = new Casilla[h, w];
-                pers = new Personaje[5];
+                pers = new Personaje[num_char];
                 for(int i = 0; i < w; i++)
                 {
                     for(int j = 0; j < h; j++)
@@ -132,7 +133,7 @@ namespace Practica2
                 Console.SetCursorPosition((2*pers[i].pos.fil), ( 2*pers[i].pos.col));
 
                 Console.BackgroundColor = colorsbg[0];
-                if (i == (int)(Character.Pacman))
+                if (i == 0)
                 {
                     Console.ForegroundColor = colors[i];
                     Console.Write(">>");
@@ -148,16 +149,16 @@ namespace Practica2
             Console.BackgroundColor = ConsoleColor.Black;
             if (DEBUG)
             {
-            Console.SetCursorPosition(4* dimX +2, 3); ;
+            Console.SetCursorPosition(8* dimX +2, 3); ;
             Console.WriteLine(" DEBUG ");
                 for (int i = 0; i < pers.Length; i++)
                 {
-                    Console.SetCursorPosition(4*dimX + 2, 5+ 2*i); ;
+                    Console.SetCursorPosition(8*dimX + 2, 5+ 2*i); ;
 
                     Console.ForegroundColor = colors[i];
                    
                     Console.Write(" pos: " + pers[i].pos.col + " " + pers[i].pos.fil);
-                    Console.SetCursorPosition(4 * dimX + 2, 5 + 2 * i + 1); ;
+                    Console.SetCursorPosition(8 * dimX + 2, 5 + 2 * i + 1); ;
                     Console.Write(" dir: " + pers[i].dir.col + " " + pers[i].dir.fil);
                 
                 }
@@ -197,53 +198,12 @@ namespace Practica2
         }
         public void MuevePacman()
         {
-            Coord next = new Coord();
-
-            if(Siguiente(pers[(int)Character.Pacman].pos, pers[(int)Character.Pacman].dir, out next))
-            {
-                cas[pers[0].pos.fil, pers[0].pos.col] = Casilla.Libre;
-                pers[(int)Character.Pacman].pos = next;
-
-            }
+         
         }
 
         public bool CambiaDir(char c)
         {
-            bool result = true;
-            Coord d = pers[(int)Character.Pacman].dir;
-            switch (c)
-            {
-                case 'l':
-                    d.fil=-1;
-                    d.col = 0;
-                    MuevePacman();
-                    break;
-             
-                case 'u':
-                    d.col = -1;
-                    d.fil = 0;
-                    MuevePacman();
-                    break;
-                    
-                case 'r':
-                    d.fil = 1;
-
-                    d.col = 0;
-                    MuevePacman();
-                    break;
-                    
-                case 'd':
-                    d.col = 1;
-                    d.fil = 0;
-                    MuevePacman();
-                    break;
-
-                default:
-                    result = false;
-                    break;
-            }
-
-            return result;
+            return false;
         }
     }
 }
