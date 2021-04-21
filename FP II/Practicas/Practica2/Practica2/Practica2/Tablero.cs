@@ -17,7 +17,7 @@ namespace Practica2
             public Coord pos, dir, // posicion y direccion actual
             ini; // posicion inicial (para fantasmas)
 
-            ListaPares lst; //para acumular direcciones
+           public ListaPares lst; //para acumular direcciones
         }
         Personaje[] pers;
         // colores para los personajes
@@ -76,6 +76,7 @@ namespace Practica2
                                      pers[char_].pos = new Coord(i,j);
                                      pers[char_].ini = pers[char_].pos;
                                      pers[char_].dir = new Coord(0,0);
+                                    pers[char_].lst = new ListaPares(pers[char_].dir);
                                 }
                            
                                 break;
@@ -163,8 +164,8 @@ namespace Practica2
                 
                 }
             }
-
         }
+
         bool Siguiente(Coord pos, Coord dir, out Coord newPos)
         {
             bool result = false;
@@ -198,12 +199,22 @@ namespace Practica2
         }
         public void MuevePacman()
         {
-         
+            Coord n = new Coord();
+            if(Siguiente(pers[0].pos,pers[0].dir, out n))
+            {
+                pers[0].pos = n;
+            }
+            else
+            {
+                //moveremos a la siguiente en la lista
+            }
+
         }
 
         public bool CambiaDir(char c)
         {
             return false;
         }
+
     }
 }

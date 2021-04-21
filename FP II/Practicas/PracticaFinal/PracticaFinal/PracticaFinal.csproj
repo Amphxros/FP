@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{2584CFDD-3048-4354-8610-708AEA66BFE1}</ProjectGuid>
+    <ProjectGuid>{D1A846BD-C1D7-46B7-A2EC-CC208AC52AD7}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>ProyectoFinal</RootNamespace>
-    <AssemblyName>ProyectoFinal</AssemblyName>
+    <RootNamespace>PracticaFinal</RootNamespace>
+    <AssemblyName>PracticaFinal</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -43,8 +43,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="LinkedList.cs" />
-    <Compile Include="Mapa.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
