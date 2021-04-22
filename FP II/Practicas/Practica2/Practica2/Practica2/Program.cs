@@ -20,10 +20,9 @@ namespace Practica2
                 LeeInput(ref c);
                 // procesamiento del input
                 if (c != ' ' && t.CambiaDir(c)) { 
-                    c = ' ';
+                    t.MuevePacman();
                 }
                 exit = c == 'q';
-                t.MuevePacman();
                 // IA de los fantasmas: TODO
 
 
@@ -35,8 +34,7 @@ namespace Practica2
             }
             }
 
-            static void LeeInput(ref char dir)
-        {
+            static void LeeInput(ref char dir){
             if (Console.KeyAvailable)
             {
                 string tecla = Console.ReadKey(true).Key.ToString();
@@ -48,7 +46,7 @@ namespace Practica2
                     case "RightArrow": dir = 'r'; break;
 
                     case "Q": case "q": dir = 'q'; break;
-                    
+          
                 }
             }
             while (Console.KeyAvailable)
