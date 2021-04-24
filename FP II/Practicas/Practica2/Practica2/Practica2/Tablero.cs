@@ -12,7 +12,7 @@ namespace Practica2
         enum Casilla { Libre, Muro, Comida, Vitamina, MuroCelda }
         Casilla[,] cas;
 
-        Coord[] dirs = { new Coord(2, 0), new Coord(0, 1), new Coord(-2, 0), new Coord(0, -1) };
+        Coord[] dirs = { new Coord(1, 0), new Coord(0, 1), new Coord(-1, 0), new Coord(0, -1) };
         enum Tipodir { RIGHT, DOWN, LEFT, UP };
         struct Personaje
         {
@@ -33,7 +33,7 @@ namespace Practica2
             StreamReader read = new StreamReader(file);
             if (File.Exists(file))
             {
-                int[,] temp = new int[200, 200];
+                int[,] temp = new int[100, 100];
                 int w = 0;
                 int h = 0;
                 int num_char = 0;
@@ -41,9 +41,10 @@ namespace Practica2
                 {
                     string s = read.ReadLine();
                     w = s.Length;
-                    for (int i = 0; i < s.Length; i++)
+                    string[] line = s.Split(' ');
+                    for (int i = 0; i < line.Length; i++)
                     {
-                        int t = (int)Char.GetNumericValue(s[i]);
+                        int t = int.Parse(line[i]);
                         temp[i, h] = t;
                         if (t >= 5 && t < 10)
                         {
@@ -82,6 +83,7 @@ namespace Practica2
                                     pers[char_].dir = new Coord(0, 0);
                                     pers[char_].lst = new ListaPares(pers[char_].dir);
                                 }
+                                
 
                                 break;
                         }
@@ -100,7 +102,7 @@ namespace Practica2
             {
                 for (int j = 0; j < dimX; j++)
                 {
-                    Console.SetCursorPosition((2 * i), (2* j));
+                    Console.SetCursorPosition((2 * i), ( j));
                     switch (cas[j, i])
                     {
                         case Casilla.MuroCelda:
@@ -137,36 +139,29 @@ namespace Practica2
             {
                 int n = pers[i].pos.fil;
                 int m = pers[i].pos.col;
-                Console.SetCursorPosition((2 * n), (2 * m));
+                Console.SetCursorPosition((2 * n), ( m));
                 Console.ForegroundColor = colors[i];
                 if (i == 0)
                 {
-
-                    switch (pers[i].dir.fil)
+                    if (pers[0].dir == dirs[(int)Tipodir.LEFT])
                     {
-                        case -1:
-                            Console.Write(">>");
-                            break;
-                        case 1:
-                            Console.Write("<<");
-                            break;
-                        default: //en caso de que sea 0
-                            switch (pers[i].dir.col)
-                            {
-                                case 1:
-                                    Console.Write("^^");
-                                    break;
-                                case -1:
-                                    Console.Write("VV");
-                                    break;
-                                default:
-                                    Console.Write(">>"); //si su dir es 0,0 
-                                    break;
-                            }
-                            break;
+                        Console.Write(">>");
                     }
+                    else if (pers[0].dir == dirs[(int)Tipodir.RIGHT])
+                    {
 
+                        Console.Write("<<");
+                    }
+                    else if (pers[0].dir == dirs[(int)Tipodir.DOWN])
+                    {
 
+                        Console.Write("^^");
+                    }
+                    else if (pers[0].dir == dirs[(int)Tipodir.UP])
+                    {
+
+                        Console.Write("VV");
+                    }
 
                 }
                 else
@@ -175,21 +170,10 @@ namespace Practica2
                 }
             }
             Console.BackgroundColor = ConsoleColor.Black;
+
             if (DEBUG)
             {
-                Console.SetCursorPosition(8 * dimX + 2, 3); 
-                Console.WriteLine(" DEBUG " + cas.GetLength(0) + " "+ cas.GetLength(1));
-                for (int i = 0; i < pers.Length; i++)
-                {
-                    Console.SetCursorPosition(8 * dimX + 2, 5 + 2 * i); ;
 
-                    Console.ForegroundColor = colors[i];
-
-                    Console.Write(" pos: " + pers[i].pos.col + " " + pers[i].pos.fil);
-                    Console.SetCursorPosition(8 * dimX + 2, 5 + 2 * i + 1); ;
-                    Console.Write(" dir: " + pers[i].dir.col + " " + pers[i].dir.fil);
-
-                }
             }
         }
 
@@ -203,7 +187,7 @@ namespace Practica2
             {
                 newPos.col = 0;
             }
-            else if (newPos.col <= 0)
+            else if (newPos.col < 0)
             {
                 newPos.col = cas.GetLength(0) - 1;
             }
@@ -212,7 +196,7 @@ namespace Practica2
             {
                 newPos.fil = 0;
             }
-            else if (newPos.fil <= 0)
+            else if (newPos.fil < 0)
             {
                 newPos.fil = cas.GetLength(1) - 1;
             }
@@ -226,19 +210,20 @@ namespace Practica2
         public void MuevePacman()
         {
             Coord n = new Coord();
+            if (cas[pers[0].pos.col, pers[0].pos.fil] == Casilla.Comida)
+            {
+                cas[pers[0].pos.col, pers[0].pos.fil] = Casilla.Libre;
+                Console.Beep(1440,30);
+            }
+            else if (cas[pers[0].pos.col, pers[0].pos.fil] == Casilla.Vitamina)
+            {
+                cas[pers[0].pos.col, pers[0].pos.fil] = Casilla.Libre;
+                Console.Beep(1550,60);
+            }
+          
             if (Siguiente(pers[0].pos, pers[0].dir, out n))
             {
                 pers[0].pos = n;
-                if (cas[pers[0].pos.col, pers[0].pos.fil] == Casilla.Comida)
-                {
-                    cas[pers[0].pos.col, pers[0].pos.fil] = Casilla.Libre;
-                    Console.Beep(1440,30);
-                }
-                else if (cas[pers[0].pos.col, pers[0].pos.fil] == Casilla.Vitamina)
-                {
-                    cas[pers[0].pos.col, pers[0].pos.fil] = Casilla.Libre;
-                    Console.Beep(1550,60);
-                }
             }
             else
             {
