@@ -9,17 +9,22 @@ namespace Practica2
 {
     class Tablero
     {
+        Random rnd= new Random();
         enum Casilla { Libre, Muro, Comida, Vitamina, MuroCelda }
         Casilla[,] cas;
 
-        Coord[] dirs = { new Coord(1, 0), new Coord(0, 1), new Coord(-1, 0), new Coord(0, -1) };
+        Coor[] dirs = { new Coor(1, 0), new Coor(0, 1), new Coor(-1, 0), new Coor(0, -1) };
         enum Tipodir { RIGHT, DOWN, LEFT, UP };
+
+        const int lapCarcelFantasmas = 3000; // retardo para quitar el muro a los fantasmas
+        int lapFantasmas; // tiempo restante para quitar el muro
+        int numComida; // numero de casillas restantes con comida o vitamina
+
         struct Personaje
         {
-            public Coord pos, dir, // posicion y direccion actual
+            public Coor pos, dir, // posicion y direccion actual
             ini; // posicion inicial (para fantasmas)
 
-            public ListaPares lst; //para acumular direcciones
         }
         Personaje[] pers;
         // colores para los personajes
@@ -78,10 +83,10 @@ namespace Practica2
                                     cas[j, i] = Casilla.Libre;
                                     int char_ = 9 - temp[i, j];
                                     pers[char_] = new Personaje();
-                                    pers[char_].pos = new Coord(i, j);
+                                    pers[char_].pos = new Coor(i, j);
                                     pers[char_].ini = pers[char_].pos;
-                                    pers[char_].dir = new Coord(0, 0);
-                                    pers[char_].lst = new ListaPares(pers[char_].dir);
+                                    pers[char_].dir = new Coor(0, 0);
+                                  
                                 }
                                 
 
@@ -134,7 +139,27 @@ namespace Practica2
                 }
             }
             Console.BackgroundColor = ConsoleColor.Black;
+            if (DEBUG)
+            {
+                Console.SetCursorPosition(4* dimX,0);
 
+              //  for (int i = 0; i < pers.Length; i++)
+              //  {
+              //      Console.ForegroundColor = colors[i];
+              //
+              //      Console.SetCursorPosition(4* dimX +2, 2*i);
+              //      Console.Write(pers[i].pos.col + " " + pers[i].pos.fil);
+              //
+              //      Console.SetCursorPosition(4*dimX, 2 * (i + 1));
+              //      Console.Write(pers[i].dir.col + " " + pers[i].dir.fil);
+              //
+              //  }
+              //
+                Console.SetCursorPosition(4* dimX, dimY);
+                Console.Write(lapFantasmas);
+
+            }
+            Console.ForegroundColor = ConsoleColor.White;
             for (int i = 0; i < pers.Length; i++)
             {
                 int n = pers[i].pos.fil;
@@ -169,15 +194,9 @@ namespace Practica2
                     Console.Write("ºº");
                 }
             }
-            Console.BackgroundColor = ConsoleColor.Black;
-
-            if (DEBUG)
-            {
-
-            }
         }
 
-        bool Siguiente(Coord pos, Coord dir, out Coord newPos)
+        bool Siguiente(Coor pos, Coor dir, out Coor newPos)
         {
             bool result = false;
 
@@ -201,7 +220,7 @@ namespace Practica2
                 newPos.fil = cas.GetLength(1) - 1;
             }
            
-            if(cas[newPos.col,newPos.fil]!=Casilla.Muro)
+            if(cas[newPos.col,newPos.fil]!=Casilla.Muro && cas[newPos.col, newPos.fil] != Casilla.MuroCelda)
                 result = true;
             
 
@@ -209,7 +228,7 @@ namespace Practica2
         }
         public void MuevePacman()
         {
-            Coord n = new Coord();
+            Coor n = new Coor();
             if (cas[pers[0].pos.col, pers[0].pos.fil] == Casilla.Comida)
             {
                 cas[pers[0].pos.col, pers[0].pos.fil] = Casilla.Libre;
@@ -232,14 +251,11 @@ namespace Practica2
 
         }
 
-        bool HayFantasma(Coord c)
-        {
-            return false;
-        }
+
 
         public bool CambiaDir(char c)
         {
-            Coord d = new Coord();
+            Coor d = new Coor();
             switch (c)
             {
                 case 'l':
@@ -260,7 +276,7 @@ namespace Practica2
 
             }
 
-            Coord n = new Coord();
+            Coor n = new Coor();
             if (Siguiente(pers[0].pos, d, out n))
             {
                 pers[0].dir = d;
@@ -289,13 +305,64 @@ namespace Practica2
                 }
             }
         }
-         void SeleccionaDir(int fant)
-        {
+
+        int PosiblesDirs(int fant, out ListaPares lst) {
+            lst = new ListaPares();
+            for (int i = 0; i < dirs.Length; i++)
+            {
+                Coor c = new Coor();
+                if (Siguiente(pers[fant].pos, dirs[i], out c))
+                {
+                    lst.insertaFin(dirs[i]);
+                }
+
+            }
+            for (int i = 0; i < lst.getElems(); i++)
+            {
+                Coor dir = lst.getnEsimo(i);
+                if (dir == -pers[fant].pos) //si es la opuesta la borra
+                {
+                    lst.borraElto(dir);
+                }
+            }
+
+            return lst.getElems();
 
         }
-        void MueveFantasmas(int lap)
+        void SeleccionaDir(int fant)
         {
+            ListaPares lst;
+            int dir = PosiblesDirs(fant, out lst);
 
+            pers[fant].dir = lst.getnEsimo(rnd.Next(0, dir));
+             
+        }
+       public void MueveFantasmas(int lap)
+       {
+            lapFantasmas += lap;
+            if (lapFantasmas >= lapCarcelFantasmas)
+            {
+                EliminaMuroFantasmas();
+            }
+
+            for(int i=1; i< pers.Length; i++)
+            {
+                SeleccionaDir(i); //seleccionamos una dir entre las posibles
+                pers[i].pos= pers[i].pos + pers[i].dir; //y moveos los fantasmas
+            }
+
+       }
+
+        bool HayFantasma(Coor c)
+        {
+            bool result = false;
+            int i = 1;
+            while (i < pers.Length && c != pers[i].pos)
+            {
+                i++;
+            }
+            result = i < pers.Length;
+            return result;
         }
     }
 }

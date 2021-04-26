@@ -10,15 +10,15 @@ namespace Practica2
     {
         class Nodo
         {
-            public Coord coord;
+            public Coor coord;
             public Nodo sig;
 
-            public Nodo(Coord c)
+            public Nodo(Coor c)
             {
                 coord = c;
                 sig = null;
             }
-            public Nodo(Coord c, Nodo n)
+            public Nodo(Coor c, Nodo n)
             {
                 coord = c;
                 sig = n;
@@ -33,7 +33,7 @@ namespace Practica2
             pri = ult = null;
             numElems = 0;
         }
-        public ListaPares(Coord pr)
+        public ListaPares(Coor pr)
         {
             pri = ult = null;
             numElems = 0;
@@ -42,7 +42,7 @@ namespace Practica2
         }
         public int getElems() { return numElems; }
 
-        public void insertaFin(Coord c)
+        public void insertaFin(Coor c)
         {
             if (pri == null)
             {
@@ -59,7 +59,7 @@ namespace Practica2
             numElems++;
         }
 
-        public Coord getnEsimo(int n)
+        public Coor getnEsimo(int n)
         {
             if (n < 0 || n >= numElems)
             {
@@ -77,7 +77,7 @@ namespace Practica2
             }
         }
 
-        public bool borraElto(Coord c)
+        public bool borraElto(Coor c)
         {
             // lista vacia
             if (pri == null) return false;
