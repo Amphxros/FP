@@ -14,7 +14,7 @@ namespace Practica2
             int lap = 2; // retardo para bucle ppal
             char c =' ';
             bool exit = false;
-            while (!exit)
+            while (!exit && !t.Captura() && !t.finNivel())
             {
                 // input de usuario
                 LeeInput(ref c);
@@ -26,7 +26,7 @@ namespace Practica2
                 // IA de los fantasmas: TODO
 
                 t.MueveFantasmas(lap);
-                // rederizado
+                // renderizado
                 t.Dibuja();
                 // retardo
                 System.Threading.Thread.Sleep(lap);

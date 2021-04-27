@@ -14,7 +14,7 @@ namespace Practica2
         Casilla[,] cas;
 
         Coor[] dirs = { new Coor(1, 0), new Coor(0, 1), new Coor(-1, 0), new Coor(0, -1) };
-        enum Tipodir { RIGHT, DOWN, LEFT, UP };
+        enum Tipodir { RIGHT, DOWN, LEFT, UP }; //enum para que sea mas legible las dirs en lugar de dirs[0] usar dirs[LEFT]
 
         const int lapCarcelFantasmas = 3000; // retardo para quitar el muro a los fantasmas
         int lapFantasmas; // tiempo restante para quitar el muro
@@ -27,8 +27,9 @@ namespace Practica2
 
         }
         Personaje[] pers;
+
         // colores para los personajes
-        ConsoleColor[] colors = { ConsoleColor.Yellow, ConsoleColor.Red, ConsoleColor.Magenta, ConsoleColor.Cyan, ConsoleColor.DarkBlue };
+        ConsoleColor[] colors = { ConsoleColor.Yellow, ConsoleColor.Red, ConsoleColor.Magenta, ConsoleColor.Cyan, ConsoleColor.DarkBlue }; //colores de los personajes
         ConsoleColor[] colorsbg = { ConsoleColor.Black, ConsoleColor.White, ConsoleColor.Green }; //color de la cas libre, muro y vitaminas
 
         const bool DEBUG = true;
@@ -62,7 +63,7 @@ namespace Practica2
 
                 cas = new Casilla[h, w];
                 pers = new Personaje[num_char];
-
+                numComida = 0;
 
                 for (int i = 0; i < w; i++)
                 {
@@ -76,16 +77,20 @@ namespace Practica2
                             case 3:
                             case 4:
                                 cas[j, i] = (Casilla)temp[i, j];
+                                if(cas[j, i] == Casilla.Comida)
+                                {
+                                    numComida++;
+                                }
                                 break;
                             default:
                                 if (temp[i, j] >= 5)
                                 {
                                     cas[j, i] = Casilla.Libre;
-                                    int char_ = 9 - temp[i, j];
-                                    pers[char_] = new Personaje();
-                                    pers[char_].pos = new Coor(i, j);
-                                    pers[char_].ini = pers[char_].pos;
-                                    pers[char_].dir = new Coor(0, 0);
+                                    int cas_ = 9 - temp[i, j];
+                                    pers[cas_] = new Personaje();
+                                    pers[cas_].pos = new Coor(i, j);
+                                    pers[cas_].ini = pers[cas_].pos;
+                                    pers[cas_].dir = new Coor(0, 0);
                                   
                                 }
                                 
@@ -111,6 +116,9 @@ namespace Practica2
                     switch (cas[j, i])
                     {
                         case Casilla.MuroCelda:
+                            Console.BackgroundColor = colorsbg[2];
+                            Console.Write("  ");
+                            break;
                         case Casilla.Libre:
                             Console.BackgroundColor = colorsbg[0];
                             Console.Write("  ");
@@ -139,61 +147,72 @@ namespace Practica2
                 }
             }
             Console.BackgroundColor = ConsoleColor.Black;
-            if (DEBUG)
+           
+            if (DEBUG) //debugeado
             {
-                Console.SetCursorPosition(4* dimX,0);
+                Console.SetCursorPosition(2 * dimX + 10, 0);
+                Console.Write("Debug: " + "lap: " + lapFantasmas);
 
-              //  for (int i = 0; i < pers.Length; i++)
-              //  {
-              //      Console.ForegroundColor = colors[i];
-              //
-              //      Console.SetCursorPosition(4* dimX +2, 2*i);
-              //      Console.Write(pers[i].pos.col + " " + pers[i].pos.fil);
-              //
-              //      Console.SetCursorPosition(4*dimX, 2 * (i + 1));
-              //      Console.Write(pers[i].dir.col + " " + pers[i].dir.fil);
-              //
-              //  }
-              //
-                Console.SetCursorPosition(4* dimX, dimY);
-                Console.Write(lapFantasmas);
+                Console.ForegroundColor = colors[0];
+                Console.SetCursorPosition(2 * dimX + 10, 1);
+                Console.Write("Pos: " + pers[0].pos.col + " " + pers[0].pos.fil + " dir: " + pers[0].dir.col + " " + pers[0].dir.fil);
 
+                Console.ForegroundColor = colors[1];
+                Console.SetCursorPosition(2 * dimX + 10, 2);
+                Console.Write("Pos: "+ pers[1].pos.col + " " + pers[1].pos.fil + " dir: " + pers[1].dir.col+" "+ pers[1].dir.fil);
+
+                Console.ForegroundColor = colors[2];
+                Console.SetCursorPosition(2 * dimX + 10, 3);
+                Console.Write("Pos: " + pers[2].pos.col + " " + pers[2].pos.fil + " dir: " + pers[2].dir.col + " " + pers[2].dir.fil);
+
+                Console.ForegroundColor = colors[3];
+                Console.SetCursorPosition(2 * dimX + 10, 4);
+                Console.Write("Pos: " + pers[3].pos.col + " " + pers[3].pos.fil + " dir: " + pers[3].dir.col + " " + pers[3].dir.fil);
+
+                Console.ForegroundColor = colors[4];
+                Console.SetCursorPosition(2 * dimX + 10, 5);
+                Console.Write("Pos: " + pers[4].pos.col + " " + pers[4].pos.fil + " dir: " + pers[4].dir.col + " " + pers[4].dir.fil);
             }
+            
             Console.ForegroundColor = ConsoleColor.White;
+            Console.BackgroundColor = ConsoleColor.Black;
+
             for (int i = 0; i < pers.Length; i++)
             {
                 int n = pers[i].pos.fil;
                 int m = pers[i].pos.col;
-                Console.SetCursorPosition((2 * n), ( m));
+                Console.SetCursorPosition((2 * n), m);
                 Console.ForegroundColor = colors[i];
+               
+                //si es un pacman se dibuja segun su direccion
                 if (i == 0)
                 {
-                    if (pers[0].dir == dirs[(int)Tipodir.LEFT])
+                    if (pers[0].dir == dirs[(int)Tipodir.RIGHT]) //si esta yendo hacia la derecha
+                    {
+                        Console.Write("<<");
+                    }
+                    else if (pers[0].dir == dirs[(int)Tipodir.DOWN])//si esta yendo hacia abajo
+                    {
+                        Console.Write("^^");
+                    }
+                    else if (pers[0].dir == dirs[(int)Tipodir.UP]) //si esta yendo hacia arriba
+                    {
+                        Console.Write("VV");
+                    }
+                    else //si esta yendo a la izquierda o por defecto
                     {
                         Console.Write(">>");
                     }
-                    else if (pers[0].dir == dirs[(int)Tipodir.RIGHT])
-                    {
-
-                        Console.Write("<<");
-                    }
-                    else if (pers[0].dir == dirs[(int)Tipodir.DOWN])
-                    {
-
-                        Console.Write("^^");
-                    }
-                    else if (pers[0].dir == dirs[(int)Tipodir.UP])
-                    {
-
-                        Console.Write("VV");
-                    }
-
                 }
+                //si no dibujamos un fantasma
                 else
                 {
                     Console.Write("ºº");
                 }
             }
+
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.BackgroundColor = ConsoleColor.Black;
         }
 
         bool Siguiente(Coor pos, Coor dir, out Coor newPos)
@@ -229,29 +248,35 @@ namespace Practica2
         public void MuevePacman()
         {
             Coor n = new Coor();
+
             if (cas[pers[0].pos.col, pers[0].pos.fil] == Casilla.Comida)
             {
-                cas[pers[0].pos.col, pers[0].pos.fil] = Casilla.Libre;
-                Console.Beep(1440,30);
+                numComida--;
+                
             }
-            else if (cas[pers[0].pos.col, pers[0].pos.fil] == Casilla.Vitamina)
+
+            if (cas[pers[0].pos.col, pers[0].pos.fil] == Casilla.Vitamina)
             {
-                cas[pers[0].pos.col, pers[0].pos.fil] = Casilla.Libre;
-                Console.Beep(1550,60);
+              for(int i=1; i < pers.Length; i++)
+                {
+                    reseteaPosicion(i);
+                }
+             
             }
           
             if (Siguiente(pers[0].pos, pers[0].dir, out n))
             {
                 pers[0].pos = n;
             }
-            else
-            {
-
-            }
+            cas[pers[0].pos.col, pers[0].pos.fil] = Casilla.Libre;
+          
 
         }
 
-
+        private void reseteaPosicion(int fant)
+        {
+            pers[fant].pos = pers[fant].ini;
+        }
 
         public bool CambiaDir(char c)
         {
@@ -363,6 +388,19 @@ namespace Practica2
             }
             result = i < pers.Length;
             return result;
+        }
+        public bool Captura()
+        {
+            int i = 1;
+            while (i < pers.Length && pers[i].pos != pers[0].pos)
+                i++;
+
+
+            return i<pers.Length;
+        }
+        public bool finNivel()
+        {
+            return numComida <= 0;
         }
     }
 }
