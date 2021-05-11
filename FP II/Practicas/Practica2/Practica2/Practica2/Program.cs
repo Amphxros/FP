@@ -17,34 +17,32 @@ namespace Practica2
         "Levels/level07.dat",
         "Levels/level08.dat",
         "Levels/level09.dat"
-
+        //añadir mas niveles aqui
         };
 
         static void Main(string[] args)
         {
             int num = -1;
-            do
-            {
+            
+           //pedimos el nivel a jugar
+           do{
                 Console.Clear();
                 Console.Write("nivel a jugar: ");
-                try
-                {
-                    num = int.Parse(Console.ReadLine());
-                }
-                catch(Exception e)
-                {
-                    
-                }
-            } while (num < 0 || num > levels.Length);
 
+                num = int.Parse(Console.ReadLine());
+                
+            } while (num < 0 || num >= levels.Length);
 
-            Tablero t = new Tablero(levels[num]);
-
-             t.Dibuja();
              int lap = 20; // retardo para bucle ppal
-             char c =' ';
-             bool exit = false;
-          while (!exit && !t.Captura() && !t.finNivel())
+             char c =' '; //char del input
+             bool exit = false; //booleano para quitar e juego con el input
+
+
+            Tablero t = new Tablero(levels[num]); //creamos tablero
+             t.Dibuja(); //dibujamos el inicio del tablero
+
+            // bucle principal
+            while (!exit && !t.Captura() && !t.finNivel())
             {
                 // input de usuario
                 LeeInput(ref c);
@@ -53,14 +51,13 @@ namespace Practica2
                     t.MuevePacman();
                 }
                  exit = c == 'q';
-//                 // IA de los fantasmas: TODO
-//   
+                 // IA de los fantasmas   
                  t.MueveFantasmas(lap);
-//                 // renderizado
+                 // renderizado
                     t.Dibuja();
-//                 // retardo
+                 // retardo
                  System.Threading.Thread.Sleep(lap);
-//            
+            
              }
         }
 

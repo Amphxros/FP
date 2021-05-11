@@ -7,6 +7,8 @@ namespace PracticaFinal
     {
         static void Main(string[] args)
         {
+            Tablero t = new Tablero(20, 10);
+            t.Render();
         }
     }
 }

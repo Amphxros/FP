@@ -39,11 +39,10 @@ namespace Practica2
             StreamReader read = new StreamReader(file);
             if (File.Exists(file))
             {
-                int[,] temp = new int[100, 100];
-                int w = 0;
-                int h = 0;
-                int num_char = 0;
-                while (!read.EndOfStream)
+                int[,] temp = new int[100, 100]; //array temporal
+                int w = 0; //ancho
+                int h = 0; //alto
+                while (!read.EndOfStream) //leemos el archivo completo pasando todo al array temp
                 {
                     string s = read.ReadLine();
                  
@@ -54,10 +53,6 @@ namespace Practica2
                         {
                             int t = int.Parse(line[i]);
                             temp[i, h] = t;
-                            if (DEBUG)
-                            {
-                                Console.Write(t + " ");
-                            }
                         }
 
                     Console.WriteLine();
@@ -66,16 +61,18 @@ namespace Practica2
                     }
                 }
 
-                cas = new Casilla[h, w];
-                pers = new Personaje[5];
+                cas = new Casilla[h, w]; //tablero
+                pers = new Personaje[5]; //personajes
                 numComida = 0;
 
+                //lo pasamos al definitivo
                 for (int i = 0; i < w; i++)
                 {
                     for (int j = 0; j < h; j++)
                     {
                         switch (temp[i, j])
                         {
+                            //de 0 a 4 son elementos sin personajes
                             case 0:
                             case 1:
                             case 2:
@@ -87,7 +84,7 @@ namespace Practica2
                                     numComida++;
                                 }
                                 break;
-                            default:
+                            default: //si es mayor que 4 es un personaje
                                 if (temp[i, j] >= 5)
                                 {
                                     cas[j, i] = Casilla.Libre;
@@ -97,13 +94,13 @@ namespace Practica2
                                     pers[cas_].ini = pers[cas_].pos;
                                     pers[cas_].dir = new Coor(0, 0);
                                   
-                                }
-                                
+                                }          
                                 break;
                         }
                     }
                 }
 
+                //inicializamos random con una seed o no en base a debug
                 if (DEBUG)
                 {
                     rnd = new Random(100);
@@ -119,7 +116,8 @@ namespace Practica2
             Console.Clear();
             int dimX = cas.GetLength(0);
             int dimY = cas.GetLength(1);
-
+            
+            //dibujamos el tablero
             for (int i = 0; i < dimY; i++)
             {
                 for (int j = 0; j < dimX; j++)
@@ -158,6 +156,7 @@ namespace Practica2
 
                 }
             }
+            //dibujamos el debug si es necesario
             Console.BackgroundColor = ConsoleColor.Black;
             if (DEBUG) //debugeado
             {
@@ -187,6 +186,7 @@ namespace Practica2
             Console.ForegroundColor = ConsoleColor.White;
             Console.BackgroundColor = ConsoleColor.Black;
 
+            //dibujamos los personajes
             for (int i = 0; i < pers.Length; i++)
             {
                 int n = pers[i].pos.fil;
@@ -212,7 +212,7 @@ namespace Practica2
                         Console.Write(">>");
                     }
                 }
-                else
+                else //dibujamos el fantasma
                 {
                     Console.Write("ºº");
                 }
@@ -229,6 +229,7 @@ namespace Practica2
             newPos.col = pos.col + dir.col;
             newPos.fil = pos.fil + dir.fil;
 
+            //teletransportamos si se sobresale
             if (newPos.col >= cas.GetLength(0))
             {
                 newPos.col = 0;
@@ -247,6 +248,7 @@ namespace Practica2
                 newPos.fil = cas.GetLength(1) - 1;
             }
 
+            //si la siguiente pos no es un muro o muro celda entonces es true
             if (cas[newPos.col, newPos.fil] != Casilla.Muro && cas[newPos.col, newPos.fil] != Casilla.MuroCelda)
             {
                 result = true;
@@ -343,6 +345,7 @@ namespace Practica2
 
         int PosiblesDirs(int fant, out ListaPares lst) {
             lst = new ListaPares();
+            //insertamos todas las dirs posibles
             for (int i = 0; i < dirs.Length; i++)
             {
                 Coor c = new Coor();
@@ -352,10 +355,11 @@ namespace Practica2
                 }
 
             }
+            //quitamos la opuesta
             for (int i = 0; i < lst.getElems(); i++)
              {
                  Coor dir = lst.getnEsimo(i);
-                 if ((dir == -pers[fant].dir || HayFantasma(pers[fant].pos + dir))) //si es la opuesta a la direccion actual o si se borra para dar un movimiento mas fluido 
+                 if (dir == -pers[fant].dir && lst.getElems() > 2) //si es la opuesta a la direccion actual o si se borra para dar un movimiento mas fluido 
                  {
                      lst.borraElto(dir);
                  }
@@ -372,11 +376,18 @@ namespace Practica2
             {
                 pers[fant].dir = lst.getnEsimo(rnd.Next(0, dir));
             }
-            //esto es para ademas teletransportar a los fantasmas si es necesario
+            else
+            {
+                pers[fant].dir = lst.getnEsimo(0); //si no va hacia la unica dir disponible
+            }
+            //esto es para4 ademas teletransportar a los fantasmas si es necesario
             Coor newpos;
-          if( Siguiente(pers[fant].pos, pers[fant].dir, out newpos))
-                pers[fant].pos = newpos; 
+            if (Siguiente(pers[fant].pos, pers[fant].dir, out newpos))
+            {
+                pers[fant].pos = newpos;
+            }
         }
+        //mueve los fantasmas y tambien elimina el murocelda si ha pasado tiempo suficiente
        public void MueveFantasmas(int lap)
        {
             lapFantasmas += lap; 
@@ -387,11 +398,11 @@ namespace Practica2
 
             for(int i=1; i< pers.Length; i++)
             {
-                SeleccionaDir(i); //seleccionamos una dir entre las posiblesç
+                SeleccionaDir(i); //seleccionamos una dir entre las posibles
             }
 
        }
-
+        //devuelve true si en c hay un fantasma
         bool HayFantasma(Coor c)
         {
             bool result = false;
@@ -403,17 +414,21 @@ namespace Practica2
             result = i < pers.Length;
             return result;
         }
-        public bool Captura()
+
+        //devuelve true si hay un fantasma en la misma pos que el pacman
+        public bool Captura() 
         {
-            int i = 1;
+            int i = 1; //uno por la pos de los fantasmas en el array pers
             while (i < pers.Length && pers[i].pos != pers[0].pos)
             {
                 i++;
             }
 
-            return i<pers.Length;
+            return i < pers.Length;
         }
-        public bool finNivel()
+
+        //devuelve true si no queda comida en el nivel
+        public bool finNivel() 
         {
             return numComida <= 0;
         }
