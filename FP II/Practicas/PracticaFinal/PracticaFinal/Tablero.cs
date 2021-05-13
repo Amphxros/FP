@@ -10,14 +10,15 @@ namespace PracticaFinal
     class Tablero
     {
         Bloque[,] bloques;
+        Paddle player;
         Random rnd = new Random();
+
         ConsoleColor[] col = { ConsoleColor.Red, ConsoleColor.Cyan, ConsoleColor.Yellow, ConsoleColor.Magenta, ConsoleColor.White,ConsoleColor.Green };
         public Tablero(int width, int height)
         {
             bloques = new Bloque[width, height];
             for(int i = 0; i < width; i++)
             {
-                
                 for (int j = 0; j < height; j++)
                 {
                     Vector2D pos = new Vector2D(i, j);
@@ -25,6 +26,9 @@ namespace PracticaFinal
                 
                 }
             }
+
+            Vector2D p = new Vector2D(width / 2, 2 * height);
+            player = new Paddle(p, 3);
 
         }
         public Tablero(string file)
@@ -43,12 +47,19 @@ namespace PracticaFinal
                 }
             }
 
-            Console.SetCursorPosition(40, 40);
-        }
-        public void Update()
-        {
+            player.Render();
+            Console.WriteLine();
 
         }
+        public void Update(char c)
+        {
+        
+            player.handleInput(c);
+            
+            player.Update();
+
+        } 
 
     }
+
 }
