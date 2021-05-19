@@ -17,7 +17,7 @@ namespace PracticaFinal
                 LeeInput(ref c);
                 exit_ = c == 'q';
                 
-                t.Update(c);
+                t.MuevePala(c);
                 t.Render();
             }
 

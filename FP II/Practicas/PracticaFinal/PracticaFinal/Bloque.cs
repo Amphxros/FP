@@ -12,16 +12,22 @@ namespace PracticaFinal
         int vida_;
         ConsoleColor color_;
 
+        public Vector2D Position
+        {
+            get
+            {
+                return pos_;
+            }
+        }
+
+
         public Bloque(Vector2D pos, int vida, ConsoleColor color)
         {
             pos_ = pos;
             vida_ = vida;
             color_ = color;
         }
-        public Vector2D getPos()
-        {
-            return pos_;
-        }
+        
 
         public void Render()
         {

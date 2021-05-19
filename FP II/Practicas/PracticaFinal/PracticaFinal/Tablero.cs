@@ -19,10 +19,10 @@ namespace PracticaFinal
             bloques = new Bloque[width, height];
             for(int i = 0; i < width; i++)
             {
-                for (int j = 0; j < height; j++)
+                for (int j = 1; j < height+1; j++)
                 {
                     Vector2D pos = new Vector2D(i, j);
-                    bloques[i, j] = new Bloque(pos, 1,col[rnd.Next(0, col.Length)]);
+                    bloques[i, j-1] = new Bloque(pos, 1,col[rnd.Next(0, col.Length)]);
                 
                 }
             }
@@ -51,12 +51,15 @@ namespace PracticaFinal
             Console.WriteLine();
 
         }
-        public void Update(char c)
+        public void MuevePala(char c)
         {
         
             player.handleInput(c);
-            
-            player.Update();
+
+            if (player.Position.getX() + player.Direction.getX() > 0 && player.Position.getX() + player.Direction.getX() - 1.5* player.Width < bloques.GetLength(0))
+            {
+                player.Update();
+            }
 
         } 
 

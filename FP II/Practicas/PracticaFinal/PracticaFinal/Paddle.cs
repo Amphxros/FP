@@ -10,21 +10,53 @@ namespace PracticaFinal
     class Paddle
     {
         const int WIDTH = 10;
-        Vector2D pos_, dir_;
-        int vida_;
+        private Vector2D pos_, dir_;
+        private int vida_;
         int width_;
 
+        //get and sets the position
+        public Vector2D Position
+        {
+            get
+            {
+                return pos_;
+            }
+            set
+            {
+                pos_ = value;
+            }
+        }
+        
+        //get and sets the direction
+        public Vector2D Direction
+        {
+            get
+            {
+                return dir_;
+            }
+            set
+            {
+                dir_ = value;
+            }
+        }
+
+        public int Width
+        {
+            get
+            {
+                return width_;
+            }
+            set
+            {
+                width_ = value;
+            }
+        }
         public Paddle(Vector2D pos, int vida)
         {
             pos_ = pos;
             vida_ = vida;
             dir_ = new Vector2D();
             width_ = WIDTH;
-        }
-
-        public Vector2D getPos()
-        {
-            return pos_;
         }
 
         public void Render()
