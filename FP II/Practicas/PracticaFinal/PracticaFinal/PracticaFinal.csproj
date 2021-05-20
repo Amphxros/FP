@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Ball.cs" />
     <Compile Include="Bloque.cs" />
     <Compile Include="Paddle.cs" />
     <Compile Include="Program.cs" />

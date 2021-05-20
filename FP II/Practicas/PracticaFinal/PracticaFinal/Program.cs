@@ -5,21 +5,18 @@ namespace PracticaFinal
 {
     class Program
     {
-        static void Main(string[] args)
-        {
-            Tablero t = new Tablero(20, 10);
-            t.Render();
-            bool exit_= false;
 
-            while (!exit_)
-            {
-                char c = ' ';
-                LeeInput(ref c);
-                exit_ = c == 'q';
-                
-                t.MuevePala(c);
-                t.Render();
-            }
+        static string[] levels = {
+        "Levels/level00.lvl",
+        "Levels/level01.lvl"
+       
+        //añadir mas niveles aqui
+        };
+
+
+        static void Main(string[] args){
+            Tablero t = new Tablero(levels[0]);
+            //t.Render();
 
         }
 

@@ -9,44 +9,123 @@ namespace PracticaFinal
 {
     class Tablero
     {
-        Bloque[,] bloques;
+        Bloque[] bloques;
         Paddle player;
+        Ball ball;
         Random rnd = new Random();
 
         ConsoleColor[] col = { ConsoleColor.Red, ConsoleColor.Cyan, ConsoleColor.Yellow, ConsoleColor.Magenta, ConsoleColor.White,ConsoleColor.Green };
         public Tablero(int width, int height)
         {
-            bloques = new Bloque[width, height];
-            for(int i = 0; i < width; i++)
-            {
-                for (int j = 1; j < height+1; j++)
-                {
-                    Vector2D pos = new Vector2D(i, j);
-                    bloques[i, j-1] = new Bloque(pos, 1,col[rnd.Next(0, col.Length)]);
-                
-                }
-            }
-
-            Vector2D p = new Vector2D(width / 2, 2 * height);
-            player = new Paddle(p, 3);
-
+          
         }
         public Tablero(string file)
         {
+            StreamReader read = new StreamReader(file);
+            try
+            {
+                if (File.Exists(file))
+                {
+                    char[,] tempTab= new char[200,200];
+
+                    int h_ = 0;
+                    int w_ = 0;
+                    int tamBloques = 0;
+                    int tamPaddle = 0;
+                    
+                    //Read the whole file and save it temporaly
+                    while (!read.EndOfStream)
+                    {
+                        string s= read.ReadLine();
+                       
+
+                        string[] line = s.Split(' '); //asi quitamos os espacios de la matriz
+                        w_ = line.Length;
+                        for (int i = 0; i < w_; i++)
+                        {
+                            tempTab[i, h_] = s[i];
+                            if (tempTab[i, h_] == 'A')
+                            {
+                                tamBloques++;
+                            }
+                            else if (tempTab[i, h_] == 'T')
+                            {
+                                tamPaddle++;
+                            }
+
+                            Console.SetCursorPosition(i, h_);
+                            Console.Write(tempTab[i, h_].ToString());
+                        }
+                        
+
+                        h_++;
+
+                    }
+
+                    //transfer the temporaly to the real tab
+
+                    bloques = new Bloque[tamBloques];
+
+                    int nBloques=0;
+                    bool paddleCreated = false;
+                    for(int i=0;i<tempTab.GetLength(0); i++)
+                    {
+
+                        for (int j = 0; j < tempTab.GetLength(1); j++)
+                        {
+                            switch (tempTab[i, j])
+                            {
+                                case 'A':
+                                    Vector2D p = new Vector2D(i, j + 1);
+                                    bloques[nBloques] = new Bloque(p, 1, ConsoleColor.Gray);
+                                    nBloques++;
+                                    break;
+                                case 'B':
+
+                                    Vector2D b = new Vector2D(i, j + 1);
+                                    ball = new Ball(b);
+                                    break;
+                                case 'T':
+                                    if (!paddleCreated)
+                                    {
+                                        Vector2D t = new Vector2D(i, j + 1);
+                                        player = new Paddle(t, 3);
+                                        player.Width = tamPaddle;
+                                        paddleCreated = true;
+                                    }
+                                    break;
+
+                            }
+                        }
+                    }
+
+
+
+
+                }
+                else
+                {
+                    throw new Exception("The file " + file + " doesn't exist");
+                }
+
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+
 
         }
 
         public void Render()
         {
             Console.Clear();
-            for(int i=0;i<bloques.GetLength(0); i++)
+            for(int i=0;i<bloques.Length; i++)
             {
-                for(int j= 0; j<bloques.GetLength(1); j++)
-                {
-                    bloques[i, j].Render();
-                }
+                bloques[i].Render();
             }
-
+            Console.BackgroundColor = ConsoleColor.White;
+            ball.Render();
             player.Render();
             Console.WriteLine();
 
