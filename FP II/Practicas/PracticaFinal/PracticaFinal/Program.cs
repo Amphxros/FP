@@ -6,18 +6,52 @@ namespace PracticaFinal
     class Program
     {
 
+        enum State {MENU, RUNNING, PAUSE, GAMEWIN, GAMEOVER };
+
         static string[] levels = {
         "Levels/level00.lvl",
         "Levels/level01.lvl"
        
         //añadir mas niveles aqui
         };
+        
 
-
+        
         static void Main(string[] args){
-            Tablero t = new Tablero(levels[1]);
+
+            Tablero t = new Tablero(levels[0]);
             t.Render();
+
+            bool exit = false;
+            bool moved = false;
+            while (!exit)
+            {
+                char c = ' ';
+                LeeInput(ref c);
+                if (c != ' ' && !moved) {
+                    t.IniciaBolas();
+                    moved = true;
+                }
+                else { 
+                if (c == 'q')
+                {
+                    exit = true;
+                }
+                else
+                {
+                    t.MueveBolas();
+                    t.MuevePala(c);
+                    t.Render();
+
+                }
+                }
+            }
             
+
+        }
+
+        static void MenuState()
+        {
 
         }
 

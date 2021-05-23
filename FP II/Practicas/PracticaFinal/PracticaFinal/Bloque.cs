@@ -8,32 +8,32 @@ namespace PracticaFinal
 {
     class Bloque
     {
-        Vector2D pos_;
-        int vida_;
+        private Vector2D pos_;
+        private int vida_;
         ConsoleColor color_;
+        private int width_;
 
-        public Vector2D Position
-        {
-            get
-            {
-                return pos_;
-            }
-        }
-
-
-        public Bloque(Vector2D pos, int vida, ConsoleColor color)
+        public Vector2D Position => pos_;
+        public int Width => width_;
+        
+        public Bloque(Vector2D pos, int vida, ConsoleColor color, int width)
         {
             pos_ = pos;
             vida_ = vida;
             color_ = color;
+            width_ = width;
         }
         
 
         public void Render()
         {
-            Console.SetCursorPosition(4 * pos_.getX(), pos_.getY());
+            for(int i = 0; i < width_; i++)
+            {
+            Console.SetCursorPosition(pos_.getX() + i, pos_.getY());
             Console.BackgroundColor = color_;
-            Console.Write("    ");
+            Console.Write("#.");
+
+            }
         }
     }
 }

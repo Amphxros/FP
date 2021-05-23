@@ -8,23 +8,39 @@ namespace PracticaFinal
 {
     class Ball
     {
+        public Random rnd;
         private Vector2D pos_, dir_;
         private int screen_height_;
         private int screen_width_;
 
+        public Vector2D Position { get { return pos_; } }
+
+        public Vector2D Direction { get { return dir_; } }
+
         public Ball()
         {
-
+            pos_ = new Vector2D();
+            dir_ = new Vector2D();
+        
         }
         
         public Ball(Vector2D pos)
         {
             pos_ = pos;
-
+            dir_ = new Vector2D();
+            rnd = new Random();
         }
 
         public void Init()
         {
+            Vector2D[] posDirs = { 
+                new Vector2D(-1,-1),
+                new Vector2D(-1, 1),
+                new Vector2D(1, -1),
+                new Vector2D(1,1)
+            };
+
+            dir_ = posDirs[rnd.Next(0, posDirs.Length)];
 
         }
 

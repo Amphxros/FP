@@ -6,14 +6,11 @@ using System.Threading.Tasks;
 
 namespace PracticaFinal
 {
-    enum DIRS { LEFT,RIGHT};
     class Paddle
     {
-        const int WIDTH = 10;
-        private Vector2D pos_, dir_;
+        private Vector2D pos_;
         private int vida_;
-        int width_;
-
+        private int initialWidth_;
         //get and sets the position
         public Vector2D Position
         {
@@ -26,42 +23,26 @@ namespace PracticaFinal
                 pos_ = value;
             }
         }
-        
-        //get and sets the direction
-        public Vector2D Direction
-        {
-            get
-            {
-                return dir_;
-            }
-            set
-            {
-                dir_ = value;
-            }
-        }
 
-        public int Width
-        {
-            get
-            {
-                return width_;
-            }
-            set
-            {
-                width_ = value;
-            }
-        }
-        public Paddle(Vector2D pos, int vida)
+        //get and sets the direction
+        public Vector2D Direction { get; set; }
+
+        public int Width { get; set; }
+        public Paddle(Vector2D pos, int vida, int width)
         {
             pos_ = pos;
             vida_ = vida;
-            dir_ = new Vector2D();
-            width_ = WIDTH;
+            Direction = new Vector2D();
+            Width = width;
+            initialWidth_ = width;
+
+
+
         }
 
         public void Render()
         {
-            for (int i = 0; i < width_; i++)
+            for (int i = 0; i < Width; i++)
             {
                 Console.SetCursorPosition(2* pos_.getX() + i, pos_.getY());
                 Console.BackgroundColor = ConsoleColor.White;
@@ -71,8 +52,7 @@ namespace PracticaFinal
         }
         public void Update()
         {
-
-            pos_.setX(pos_.getX() + dir_.getX());
+            pos_.setX(pos_.getX() + Direction.getX());
         }
 
         public void handleInput(char c)
@@ -80,13 +60,13 @@ namespace PracticaFinal
             switch (c)
             {
                 case 'l':
-                    dir_.setX(-1);
+                    Direction.setX(-1);
                     break;
                 case 'r':
-                    dir_.setX(1);
+                    Direction.setX(1);
                     break;
                 default:
-                    dir_.setX(0);
+                    Direction.setX(0);
                     break;
             }
         }
@@ -94,6 +74,11 @@ namespace PracticaFinal
         public bool isDead()
         {
             return vida_ <= 0;
+        }
+
+        public void resetWidth()
+        {
+            Width = initialWidth_;
         }
 
     }
