@@ -9,7 +9,6 @@ namespace PracticaFinal
     class Ball
     {
         private Vector2D pos_, dir_;
-
         private int screen_height_;
         private int screen_width_;
 

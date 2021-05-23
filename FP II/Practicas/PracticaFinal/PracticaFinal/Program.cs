@@ -15,8 +15,9 @@ namespace PracticaFinal
 
 
         static void Main(string[] args){
-            Tablero t = new Tablero(levels[0]);
-            //t.Render();
+            Tablero t = new Tablero(levels[1]);
+            t.Render();
+            
 
         }
 

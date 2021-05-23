@@ -11,7 +11,7 @@ namespace PracticaFinal
     {
         Bloque[] bloques;
         Paddle player;
-        Ball ball;
+        Lista balls;
         Random rnd = new Random();
 
         ConsoleColor[] col = { ConsoleColor.Red, ConsoleColor.Cyan, ConsoleColor.Yellow, ConsoleColor.Magenta, ConsoleColor.White,ConsoleColor.Green };
@@ -65,7 +65,7 @@ namespace PracticaFinal
                     //transfer the temporaly to the real tab
 
                     bloques = new Bloque[tamBloques];
-
+                    balls = new Lista();
                     int nBloques=0;
                     bool paddleCreated = false;
                     for(int i=0;i<tempTab.GetLength(0); i++)
@@ -83,7 +83,7 @@ namespace PracticaFinal
                                 case 'B':
 
                                     Vector2D b = new Vector2D(i, j + 1);
-                                    ball = new Ball(b);
+                                    balls.InsertaFin(new Ball(b));
                                     break;
                                 case 'T':
                                     if (!paddleCreated)
@@ -125,7 +125,12 @@ namespace PracticaFinal
                 bloques[i].Render();
             }
             Console.BackgroundColor = ConsoleColor.White;
-            ball.Render();
+            
+            for(int i=0; i< balls.NumElems; i++)
+            {
+                balls.getnEsimo(i).Render();
+            }
+
             player.Render();
             Console.WriteLine();
 
