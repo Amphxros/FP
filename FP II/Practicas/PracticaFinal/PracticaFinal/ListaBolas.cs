@@ -6,33 +6,33 @@ using System.Threading.Tasks;
 
 namespace PracticaFinal
 {
-    class Lista
+    class ListaBolas
     {
-        class Nodo
+        class NodoConBola
         {
             public Ball ball;
-            public Nodo sig;
+            public NodoConBola sig;
 
-            public Nodo(Ball b)
+            public NodoConBola(Ball b)
             {
                 ball = b;
                 sig = null;
             }
-            public Nodo(Ball b, Nodo n)
+            public NodoConBola(Ball b, NodoConBola n)
             {
                 ball = b;
                 sig = n;
             }
 
         }
-        Nodo pri, ult;
+        NodoConBola pri, ult;
         int nElems;
-        public Lista()
+        public ListaBolas()
         {
             pri = ult = null;
             nElems = 0;
         }
-        public Lista(Ball b)
+        public ListaBolas(Ball b)
         {
             pri = ult = null;
             nElems = 0;
@@ -50,13 +50,13 @@ namespace PracticaFinal
         {
             if (pri == null)
             {
-                pri = new Nodo(b);
+                pri = new NodoConBola(b);
                 pri.sig = null;
                 ult = pri;
             }
             else
             {
-                ult.sig = new Nodo(b);
+                ult.sig = new NodoConBola(b);
                 ult = ult.sig;
                 ult.sig = null;
             }
@@ -71,7 +71,7 @@ namespace PracticaFinal
             }
             else
             {
-                Nodo aux = pri;
+                NodoConBola aux = pri;
                 while (n > 0)
                 {
                     aux = aux.sig;
@@ -108,7 +108,7 @@ namespace PracticaFinal
                 else
                 {
                     // recorremos lista buscando el ANTERIOR al que hay que eliminar (para poder luego enlazar)
-                    Nodo aux = pri;
+                    NodoConBola aux = pri;
                     while (aux.sig != null && b != aux.sig.ball)
                         aux = aux.sig;
                     // si lo encontramos

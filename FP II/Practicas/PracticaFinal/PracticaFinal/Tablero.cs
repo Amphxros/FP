@@ -11,11 +11,11 @@ namespace PracticaFinal
     {
         Bloque[] bloques;
         Paddle player;
-        Lista balls;
+        ListaBolas balls;
         Random rnd = new Random();
         int width, height;
         ConsoleColor[] col = { ConsoleColor.Red, ConsoleColor.Cyan, ConsoleColor.Yellow, ConsoleColor.Magenta, ConsoleColor.White,ConsoleColor.Green };
-       
+        bool gameOver = false;
         public Tablero(int width, int height)
         {
           
@@ -67,7 +67,7 @@ namespace PracticaFinal
                     //transfer the temporaly to the real tab
 
                     bloques = new Bloque[tamBloques];
-                    balls = new Lista();
+                    balls = new ListaBolas();
                     int nBloques=0;
                     bool paddleCreated = false;
                     for(int i=0 ; i<tempTab.GetLength(0); i++)
@@ -167,22 +167,47 @@ namespace PracticaFinal
                 balls.getnEsimo(i).MoveBall();
                
                 //checkear colisiones aqui
-                if (balls.getnEsimo(i).Position.getX() + balls.getnEsimo(i).Direction.getX() < 0)
+                if (balls.getnEsimo(i).Position.getX() + balls.getnEsimo(i).Direction.getX() < 0 ||
+                    balls.getnEsimo(i).Position.getX() + balls.getnEsimo(i).Direction.getX()>width)
                 {
                     balls.getnEsimo(i).ChangeX();
                 }
-                else if (balls.getnEsimo(i).Position.getY() + balls.getnEsimo(i).Direction.getY() < 0)
+                else if (balls.getnEsimo(i).Position.getY() + balls.getnEsimo(i).Direction.getY() <= 0)
                 {
                     balls.getnEsimo(i).ChangeY();
+                }
+                else if(balls.getnEsimo(i).Position.getY() + balls.getnEsimo(i).Direction.getY() > height)
+                {
+                    balls.borraElto(balls.getnEsimo(i));
+                    if (balls.NumElems <= 0)
+                    {
+                        gameOver = true;
+                    }
+                }
+                else
+                {
+                    if (balls.getnEsimo(i).Position.getY() + balls.getnEsimo(i).Direction.getY() == player.Position.getY())
+                    {
+                        if(balls.getnEsimo(i).Position.getX()>=player.Position.getX() && balls.getnEsimo(i).Position.getX() <= player.Position.getX() + player.Width)
+                        balls.getnEsimo(i).ChangeY();
+                    }
+
+                    for(int j=0; j< bloques.Length; j++)
+                    {
+
+                    }
+
+
                 }
 
             }
         }
 
-        public bool isGameFailed()
+        public bool GameOver()
         {
-            return balls.NumElems < 0 && player.isDead();
+            return gameOver;
         }
+
 
     }
 

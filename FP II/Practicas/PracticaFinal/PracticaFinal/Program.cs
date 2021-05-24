@@ -24,7 +24,7 @@ namespace PracticaFinal
 
             bool exit = false;
             bool moved = false;
-            while (!exit)
+            while (!exit && !t.GameOver())
             {
                 char c = ' ';
                 LeeInput(ref c);
