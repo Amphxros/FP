@@ -31,9 +31,15 @@ namespace PracticaFinal
             {
             Console.SetCursorPosition(pos_.getX() + i, pos_.getY());
             Console.BackgroundColor = color_;
-            Console.Write("#.");
+            Console.Write("#");
 
             }
+        }
+
+        public bool OnCollision()
+        {
+            vida_--;
+            return vida_ <= 0;
         }
     }
 }

@@ -46,7 +46,7 @@ namespace PracticaFinal
 
         public void Render()
         {
-            Console.SetCursorPosition(2 * pos_.getX(), pos_.getY());
+            Console.SetCursorPosition(pos_.getX(), pos_.getY());
             Console.Write("  ");
         }
 

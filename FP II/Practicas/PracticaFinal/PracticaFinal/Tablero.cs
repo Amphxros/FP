@@ -41,8 +41,8 @@ namespace PracticaFinal
                         string s= read.ReadLine();
                        
 
-                        string[] line = s.Split(' '); //asi quitamos os espacios de la matriz
-                        w_ = line.Length;
+                        
+                        w_ = s.Length;
                         for (int i = 0; i < w_; i++)
                         {
                             tempTab[i, h_] = s[i];
@@ -52,7 +52,7 @@ namespace PracticaFinal
                             }
                             else if (tempTab[i, h_] == 'T')
                             {
-                                tamPaddle+=2;
+                                tamPaddle++;
                             }
 
                             Console.SetCursorPosition(i, h_);
@@ -60,7 +60,7 @@ namespace PracticaFinal
                         }
                         h_++;
                     }
-                    width = w_+2;
+                    width = w_; 
                     height = h_;
                     //transfer the temporaly to the real tab
 
@@ -75,14 +75,14 @@ namespace PracticaFinal
                             switch (tempTab[i, j])
                             {
                                 case 'A':
-                                    Vector2D p = new Vector2D(2* (i + 2), j + 1);
-                                    Bloque bl = new Bloque(p, 1, col[j % col.Length], 2);
+                                    Vector2D p = new Vector2D(i, j);
+                                    Bloque bl = new Bloque(p, 1, col[j % col.Length], 4);
                                     bloques.InsertaFin(bl);
                                     nBloques++;
                                     break;
                                 case 'B':
 
-                                    Vector2D b = new Vector2D(i, j + 1);
+                                    Vector2D b = new Vector2D(i, j );
                                     balls.InsertaFin(new Ball(b));
                                     break;
                                 case 'T':
@@ -98,7 +98,7 @@ namespace PracticaFinal
                             }
                         }
                     }
-
+                   
                 }
                 else
                 {
@@ -149,7 +149,6 @@ namespace PracticaFinal
             for(int i=0; i<balls.NumElems; i++)
             {
                 balls.getnEsimo(i).Init();
-
             }
         }
 
@@ -158,37 +157,47 @@ namespace PracticaFinal
 
             for(int i=0;i<balls.NumElems; i++)
             {
-
                 //colisiones entre bola y player
-                if (balls.getnEsimo(i).Position.getY() + balls.getnEsimo(i).Direction.getY() == player.Position.getY())
+                if (balls.getnEsimo(i).Position.getY() + balls.getnEsimo(i).Direction.getY() >= player.Position.getY())
                 {
-                    if (balls.getnEsimo(i).Position.getX() >= player.Position.getX() && balls.getnEsimo(i).Position.getX() <= player.Position.getX() + player.Width)
+                    if (balls.getnEsimo(i).Position.getX() >= player.Position.getX() &&
+                        balls.getnEsimo(i).Position.getX() <= player.Position.getX() + player.Width)
                     {
                         balls.getnEsimo(i).ChangeY();
                     }
                 }
 
+                balls.getnEsimo(i).MoveBall();
                 for (int j = 0; j < bloques.NumElems; j++)
                 {
-                    
-
+                    if (balls.getnEsimo(i).Position.getX()  >=bloques.getnEsimo(j).Position.getX() && balls.getnEsimo(i).Position.getX() <= bloques.getnEsimo(j).Position.getX() + bloques.getnEsimo(j).Width
+                        && balls.getnEsimo(i).Position.getY() == bloques.getnEsimo(j).Position.getY())
+                    {
+                        
+                        balls.getnEsimo(i).ChangeY();
+                        if (bloques.getnEsimo(j).OnCollision())
+                        {
+                            bloques.borraElto(bloques.getnEsimo(j));
+                        }
+                    }
+               
                 }
 
-                 balls.getnEsimo(i).MoveBall();
                 
                 //colisiones entre los limites de los lados
                 if (balls.getnEsimo(i).Position.getX() + balls.getnEsimo(i).Direction.getX() < 0 ||
-                    balls.getnEsimo(i).Position.getX() + balls.getnEsimo(i).Direction.getX()>width)
+                    balls.getnEsimo(i).Position.getX() + balls.getnEsimo(i).Direction.getX() >width)
                 {
                     balls.getnEsimo(i).ChangeX();
                 }
+                
                 else if (balls.getnEsimo(i).Position.getY() + balls.getnEsimo(i).Direction.getY() <= 0)
                 {
                     balls.getnEsimo(i).ChangeY();
                 }
 
                 //
-                else if(balls.getnEsimo(i).Position.getY() + balls.getnEsimo(i).Direction.getY() > height)
+                if(balls.getnEsimo(i).Position.getY() + balls.getnEsimo(i).Direction.getY() > height)
                 {
                     balls.borraElto(balls.getnEsimo(i));
                     if (balls.NumElems <= 0)

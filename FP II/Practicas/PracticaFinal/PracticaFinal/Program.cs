@@ -42,7 +42,6 @@ namespace PracticaFinal
                     t.MueveBolas();
                     t.MuevePala(c);
                     t.Render();
-
                 }
                 }
             }

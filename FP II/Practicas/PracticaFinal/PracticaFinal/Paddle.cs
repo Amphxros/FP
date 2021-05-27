@@ -44,9 +44,9 @@ namespace PracticaFinal
         {
             for (int i = 0; i < Width; i++)
             {
-                Console.SetCursorPosition(2* pos_.getX() + i, pos_.getY());
+                Console.SetCursorPosition(pos_.getX() + i, pos_.getY());
                 Console.BackgroundColor = ConsoleColor.White;
-                Console.Write("  ");
+                Console.Write(" ");
             }
             Console.BackgroundColor = ConsoleColor.Black;
         }
@@ -60,10 +60,10 @@ namespace PracticaFinal
             switch (c)
             {
                 case 'l':
-                    Direction.setX(-1);
+                    Direction.setX(-2);
                     break;
                 case 'r':
-                    Direction.setX(1);
+                    Direction.setX(2);
                     break;
                 default:
                     Direction.setX(0);
