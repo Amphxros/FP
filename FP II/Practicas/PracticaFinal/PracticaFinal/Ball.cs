@@ -10,8 +10,6 @@ namespace PracticaFinal
     {
         public Random rnd;
         private Vector2D pos_, dir_;
-        private int screen_height_;
-        private int screen_width_;
 
         public Vector2D Position { get { return pos_; } }
 

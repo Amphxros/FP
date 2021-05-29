@@ -9,19 +9,22 @@ namespace PracticaFinal
 {
     class Tablero
     {
-        
+        //Variables
         Paddle player;
+        
         ListaBolas balls;
         ListaBloques bloques;
+        
         Random rnd = new Random();
-        int width, height;
-        int tamBloques;
+        
+        int width, height, tamBloques;
+
         ConsoleColor[] col = { ConsoleColor.Red, ConsoleColor.Cyan, ConsoleColor.Yellow, ConsoleColor.Magenta, ConsoleColor.White,ConsoleColor.Green };
         bool gameOver = false;
-        public Tablero(int width, int height)
-        {
-          
-        }
+
+        //metodos
+
+        //constructora
         public Tablero(string file)
         {
             StreamReader read = new StreamReader(file);
@@ -113,7 +116,17 @@ namespace PracticaFinal
 
 
         }
-
+        
+        //si no hemos empezado la partida iniciamos las bolas
+        public void IniciaBolas()
+        {
+            for(int i=0; i<balls.NumElems; i++)
+            {
+                balls.getnEsimo(i).Init();
+            }
+        }
+       
+        //renderiza los elementos del tablero
         public void Render()
         {
             Console.Clear();
@@ -132,6 +145,8 @@ namespace PracticaFinal
             Console.WriteLine();
 
         }
+        
+        //mueve al jugador en base al input
         public void MuevePala(char c)
         {
             player.handleInput(c);
@@ -144,14 +159,7 @@ namespace PracticaFinal
 
         } 
 
-        public void IniciaBolas()
-        {
-            for(int i=0; i<balls.NumElems; i++)
-            {
-                balls.getnEsimo(i).Init();
-            }
-        }
-
+        //mueve las bolas y comprueba sus colisiones
         public void MueveBolas()
         {
 
@@ -177,6 +185,7 @@ namespace PracticaFinal
                         balls.getnEsimo(i).ChangeY();
                         if (bloques.getnEsimo(j).OnCollision())
                         {
+                            tamBloques--;
                             bloques.borraElto(bloques.getnEsimo(j));
                         }
                     }
@@ -209,16 +218,17 @@ namespace PracticaFinal
             }
         }
 
+        //es true si no quedan bolas en el tablero
         public bool GameOver()
         {
             return gameOver;
         }
 
+        // es true si no quedan bloques en el tablero
         public bool GameWin()
         {
             return tamBloques <= 0;
         }
-
 
     }
 
