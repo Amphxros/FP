@@ -16,14 +16,14 @@ namespace PracticaFinal
     {
         Vector2D pos_, dir_;
         RewardID id_;
-        int width_;
+        public int Width { get; set; }
         ConsoleColor mColor_;
         public Reward()
         {
             pos_ = new Vector2D();
             dir_ = new Vector2D();
             mColor_ = ConsoleColor.Black;
-            width_ = 0;
+            Width = 0;
 
             throw new Exception("Reward not valid");
         }
@@ -33,7 +33,18 @@ namespace PracticaFinal
             pos_ = pos;
             dir_ = dir;
             id_ = id;
-            width_ = width;
+            Width = width;
+        }
+
+        public void Render()
+        {
+            for (int i = 0; i < Width; i++)
+            {
+                Console.SetCursorPosition(pos_.getX() + i, pos_.getY());
+                Console.BackgroundColor = ConsoleColor.Green;
+                Console.Write(" ");
+            }
+            Console.BackgroundColor = ConsoleColor.Black;
         }
         
     }
