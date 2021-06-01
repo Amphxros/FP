@@ -15,7 +15,7 @@ namespace PracticaFinal
        
         //añadir mas niveles aqui
         };
-        private static State s;
+        enum State {None,Play, Load,Quit };
         public static TextInfo Text = new CultureInfo("en-US", false).TextInfo;
 
         static void Main(string[] args){
@@ -24,34 +24,80 @@ namespace PracticaFinal
             while (!exit)
             {
                
-                int id=0,level = -1, minLevel = 0, maxLevel = 1;
-                MenuState( out id,out level, minLevel, maxLevel);
-                exit = id == (int)(State.Quit);
-                if (id==(int)State.Play)
+                int level = -1, minLevel = 0, maxLevel = 1;
+                State s = HandleState();
+
+                switch (s)
                 {
-                    Tablero t = new Tablero(levels[level]);
-                    RunningState(t);
-                }
-                else if(id==(int)State.Load)
-                {
-                    //load a file
+                    case State.Play:
+                        //nueva partida
+                        Console.Clear();
+                        do
+                        {
+                            try
+                            {
+                                Console.SetCursorPosition(10, 2);
+                                Console.WriteLine("= B L O C K  D E S T R O Y E R= ");
+                                Console.SetCursorPosition(10, 7);
+                                Console.WriteLine("Controls:");
+                                Console.WriteLine("<- & -> to move the paddle");
+                                Console.WriteLine("P to pause the game");
+                                Console.SetCursorPosition(10, 14);
+                                Console.Write("which level do you want to play? > ");
+
+                                level = int.Parse(Console.ReadLine());
+
+
+                                if (level > maxLevel)
+                                {
+                                    Console.WriteLine("unavailable");
+                                }
+
+
+
+                            }
+                            catch
+                            {
+
+                            }
+
+                        } while (level < minLevel || level > maxLevel);
+
+
+                        Tablero t = new Tablero(levels[level]);
+                        RunningState(t);
+
+                        break;
+
+                    case State.Load:
+                        //cargar partida existente
+                        break;
+                    case State.Quit:
+                        exit = true;
+                        break;
 
                 }
+
             }
         }
 
-
-        enum State {None,Play, Load,Quit };
-        static void MenuState(out int id, out int level, int levelMin, int levelMax)
+        static State HandleState()
         {
-            level = -1;
-            State s= State.None;
-            id = 0;
-             Console.Clear();
-                    Console.SetCursorPosition(10, 2);
-                    Console.WriteLine("= B L O C K  D E S T R O Y E R= ");
-                    Console.SetCursorPosition(10, 7);
-                   
+            State s = State.None;
+
+            Console.Clear();
+            Console.SetCursorPosition(10, 2);
+            string t=("= BLOCK DESTROYER = ");
+            ConsoleColor[] col = {ConsoleColor.Magenta, ConsoleColor.Yellow, ConsoleColor.Cyan };
+
+            for(int i = 0; i < t.Length; i++)
+            {
+                Console.ForegroundColor = col[i % col.Length];
+                Console.Write(t[i] + " ");
+            }
+
+
+            Console.SetCursorPosition(10, 7);
 
             do
             {
@@ -64,72 +110,25 @@ namespace PracticaFinal
                     Console.Write("what you want to do >  ");
                     Console.ForegroundColor = ConsoleColor.White;
                     string l = Console.ReadLine();
-                    
+
                     s = (State)Enum.Parse(typeof(State), Text.ToTitleCase(l));
-                    
+
                 }
                 catch
                 {
 
                 }
-                } while (s == State.None);
+            } while (s == State.None);
 
-           
+            return s;
 
-            switch (s)
-            {
-                case State.Play:
-                    id = (int)State.Play;
-                    do
-                    {
-                        try
-                        {
-                            Console.Clear();
-                            Console.SetCursorPosition(10, 2);
-                            Console.WriteLine("= B L O C K  D E S T R O Y E R= ");
-                            Console.SetCursorPosition(10, 7);
-                            Console.WriteLine("Controls:");
-                            Console.WriteLine("<- & -> to move the paddle");
-                            Console.WriteLine("P to pause the game");
-                            Console.SetCursorPosition(10, 14);
-                            Console.Write("which level do you want to play? > ");
-
-                            level = int.Parse(Console.ReadLine());
-
-
-                            if (level > levelMax)
-                            {
-                                Console.WriteLine("unavailable");
-                            }
-
-
-
-                        }
-                        catch
-                        {
-
-                        }
-
-                    } while (level < levelMin || level > levelMax);
-
-                    break;
-
-                case State.Load:
-
-                    id = (int)State.Load;
-                    //cargar partida existente
-                    break;
-                case State.Quit:
-                    id = (int)State.Quit;
-                    break;
-
-            }
-
-           
 
 
         }
 
+
+
+        
         static void RunningState(Tablero t)
         {
             t.Render();

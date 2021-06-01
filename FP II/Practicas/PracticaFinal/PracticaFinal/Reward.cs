@@ -17,12 +17,11 @@ namespace PracticaFinal
         Vector2D pos_, dir_;
         RewardID id_;
         public int Width { get; set; }
-        ConsoleColor mColor_;
+      
         public Reward()
         {
             pos_ = new Vector2D();
             dir_ = new Vector2D();
-            mColor_ = ConsoleColor.Black;
             Width = 0;
 
             throw new Exception("Reward not valid");
@@ -46,6 +45,9 @@ namespace PracticaFinal
             }
             Console.BackgroundColor = ConsoleColor.Black;
         }
-        
+        public void Move()
+        {
+            pos_.setY(pos_.getY() + dir_.getY());
+        }
     }
 }

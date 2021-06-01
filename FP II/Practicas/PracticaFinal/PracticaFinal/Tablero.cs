@@ -14,7 +14,7 @@ namespace PracticaFinal
         
         ListaBolas balls;
         ListaBloques bloques;
-        
+        ListaPremios premios;
         Random rnd = new Random();
         
         int width, height, tamBloques;
@@ -69,6 +69,7 @@ namespace PracticaFinal
 
                     balls = new ListaBolas();
                     bloques = new ListaBloques();
+                    premios = new ListaPremios();
                     int nBloques=0;
                     bool paddleCreated = false;
                     for(int i=0 ; i<tempTab.GetLength(0); i++)
@@ -96,6 +97,21 @@ namespace PracticaFinal
                                         
                                         paddleCreated = true;
                                     }
+                                    break;
+                                case 'P':
+                                    Vector2D pos = new Vector2D(i, j);
+                                    Reward r = new Reward(pos, new Vector2D(0, -1), 2, RewardID.AddWidth);
+                                    premios.InsertaFin(r);
+                                    break;
+                                case 'O':
+                                    Vector2D ps = new Vector2D(i, j);
+                                    Reward re = new Reward(ps, new Vector2D(0, -1), 2, RewardID.AddBalls);
+                                    premios.InsertaFin(re);
+                                    break;
+                                case 'I':
+                                    Vector2D p_ = new Vector2D(i, j);
+                                    Reward re_ = new Reward(p_, new Vector2D(0, -1), 2, RewardID.NextLevel);
+                                    premios.InsertaFin(re_);
                                     break;
 
                             }
