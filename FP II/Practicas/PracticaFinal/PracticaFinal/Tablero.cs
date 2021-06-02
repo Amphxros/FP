@@ -19,7 +19,7 @@ namespace PracticaFinal
         
         int width, height, tamBloques;
 
-        ConsoleColor[] col = { ConsoleColor.Red, ConsoleColor.Cyan, ConsoleColor.Yellow, ConsoleColor.Magenta, ConsoleColor.White,ConsoleColor.Green };
+        ConsoleColor[] col = {ConsoleColor.Cyan, ConsoleColor.Yellow, ConsoleColor.Magenta };
         bool gameOver = false;
 
         //metodos
@@ -157,7 +157,14 @@ namespace PracticaFinal
                 balls.getnEsimo(i).Render();
             }
 
+            for (int i = 0; i < premios.NumElems; i++)
+            {
+                premios.getnEsimo(i).Render();
+            }
+
+
             player.Render();
+
             Console.WriteLine();
 
         }
@@ -202,6 +209,12 @@ namespace PracticaFinal
                         if (bloques.getnEsimo(j).OnCollision())
                         {
                             tamBloques--;
+                            int p = rnd.Next(0, 100);
+                            if (p < 20)
+                            {
+                                Reward r = new Reward(bloques.getnEsimo(j).Position, new Vector2D(0, 1), 2, RewardID.AddBalls);
+                                premios.InsertaFin(r);
+                            }
                             bloques.borraElto(bloques.getnEsimo(j));
                         }
                     }
@@ -232,8 +245,32 @@ namespace PracticaFinal
                 }
                
             }
+
         }
 
+        public void MuevePremios()
+        {
+            for(int i = 0; i < premios.NumElems; i++)
+            {
+                bool hasTodelete = false;
+               
+               
+
+               premios.getnEsimo(i).Move();
+                
+                if (premios.getnEsimo(i).Position.getY() > height)
+                {
+                    hasTodelete = true;
+                }
+
+                if (hasTodelete)
+                {
+                    premios.borraElto(premios.getnEsimo(i));
+                }
+
+            }
+        }
+     
         //es true si no quedan bolas en el tablero
         public bool GameOver()
         {

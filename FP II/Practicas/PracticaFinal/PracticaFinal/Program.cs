@@ -161,6 +161,7 @@ namespace PracticaFinal
                     {
 
                         t.MueveBolas();
+                        t.MuevePremios();
                         t.MuevePala(c);
                         t.Render();
 

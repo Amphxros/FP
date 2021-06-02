@@ -17,7 +17,9 @@ namespace PracticaFinal
         Vector2D pos_, dir_;
         RewardID id_;
         public int Width { get; set; }
-      
+        public Vector2D Position { get { return pos_; } }
+        public Vector2D Direction { get { return dir_; } }
+        public RewardID ID { get { return id_; } }    
         public Reward()
         {
             pos_ = new Vector2D();
