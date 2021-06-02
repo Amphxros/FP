@@ -11,11 +11,12 @@ namespace PracticaFinal
 
         static string[] levels = {
         "Levels/level00.lvl",
-        "Levels/level01.lvl"
+        "Levels/level01.lvl",
+        "Levels/level02.lvl"
        
         //añadir mas niveles aqui
         };
-        enum State {None,Play, Load,Quit };
+        enum State {None,Play,Load,Quit };
         public static TextInfo Text = new CultureInfo("en-US", false).TextInfo;
 
         static void Main(string[] args){
@@ -24,7 +25,7 @@ namespace PracticaFinal
             while (!exit)
             {
                
-                int level = -1, minLevel = 0, maxLevel = 1;
+                int level = -1, minLevel = 0, maxLevel = 2;
                 State s = HandleState();
 
                 switch (s)
@@ -70,7 +71,21 @@ namespace PracticaFinal
                         break;
 
                     case State.Load:
+                        Console.Clear();
                         //cargar partida existente
+                        string username = "";
+                        Console.SetCursorPosition(10, 2);
+                        Console.WriteLine("= B L O C K  D E S T R O Y E R= ");
+                        
+                        Console.SetCursorPosition(10, 7);
+                        Console.WriteLine("Controls:");
+                        Console.WriteLine("<- & -> to move the paddle");
+                        Console.WriteLine("P to pause the game");
+
+                        Console.SetCursorPosition(10, 14);
+                        Console.Write("insert your username > ");
+                        username = Console.ReadLine();
+                        
                         break;
                     case State.Quit:
                         exit = true;
@@ -150,16 +165,24 @@ namespace PracticaFinal
                     goToMenu = true;
                 }
 
+                else if (c == 's')
+                {
+                    string s = "";
+                    Console.Write("Insert your username for saving the play >");
+                    s = Console.ReadLine();
+
+                    t.SaveFile(s);
+                }
+
                 if (!pause)
                 {
-                    if (c != ' ' && c != 'p' && !moved)
+                    if (c != ' ' && c != 'p' && c!='s' && !moved)
                     {
-                        t.IniciaBolas();
                         moved = true;
+                        t.IniciaBolas();
                     }
                     else
                     {
-
                         t.MueveBolas();
                         t.MuevePremios();
                         t.MuevePala(c);
@@ -211,6 +234,7 @@ namespace PracticaFinal
 
                     case "Q": case "q": dir = 'q'; break;
                     case "P": case "p": dir = 'p'; break;
+                    case "S": case "s": dir = 's'; break;
 
                 }
             }

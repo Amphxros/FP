@@ -80,7 +80,7 @@ namespace PracticaFinal
                             {
                                 case 'A':
                                     Vector2D p = new Vector2D(i, j);
-                                    Bloque bl = new Bloque(p, 1, col[j % col.Length], 4);
+                                    Bloque bl = new Bloque(p, 0, col[j % col.Length], 4);
                                     bloques.InsertaFin(bl);
                                     nBloques++;
                                     break;
@@ -127,7 +127,7 @@ namespace PracticaFinal
             }
             catch(Exception e)
             {
-                Console.WriteLine(e.Message);
+
             }
 
 
@@ -210,7 +210,7 @@ namespace PracticaFinal
                         {
                             tamBloques--;
                             int p = rnd.Next(0, 100);
-                            if (p < 20)
+                            if (p < 10)
                             {
                                 Reward r = new Reward(bloques.getnEsimo(j).Position, new Vector2D(0, 1), 2, RewardID.AddBalls);
                                 premios.InsertaFin(r);
@@ -234,7 +234,6 @@ namespace PracticaFinal
                     balls.getnEsimo(i).ChangeY();
                 }
 
-                //
                 if(balls.getnEsimo(i).Position.getY() + balls.getnEsimo(i).Direction.getY() > height)
                 {
                     balls.borraElto(balls.getnEsimo(i));
@@ -270,6 +269,63 @@ namespace PracticaFinal
 
             }
         }
+
+        public void SaveFile(string nameFile)
+        {
+            StreamWriter w = new StreamWriter(nameFile + ".usr");
+           
+            for(int i = 0; i < width; i++)
+            {
+                for(int j = 0; j < height; j++)
+                {
+                    bool isThereAElement = false;
+                    for(int k = 0; k < bloques.NumElems; k++)
+                    {
+                        if (bloques.getnEsimo(k).Position.getX() == i && bloques.getnEsimo(k).Position.getY() == j)
+                        {
+                            w.Write("A");
+                            isThereAElement = true;
+                        }
+                    }
+                    for(int k = 0; k < balls.NumElems; k++)
+                    {
+                        if (balls.getnEsimo(k).Position.getX() == i && balls.getnEsimo(k).Position.getY() == j)
+                        {
+                            w.Write("B");
+
+                            isThereAElement = true;
+                        }
+                    }
+                    for(int k = 0; k < premios.NumElems; k++)
+                    {
+                        if (premios.getnEsimo(k).Position.getX() == i && premios.getnEsimo(k).Position.getY() == j)
+                        {
+                            w.Write("P");
+
+                            isThereAElement = true;
+                        }
+                    }
+                    
+                    if(player.Position.getX()==i && player.Position.getY() == j)
+                    {
+                        for (int k = 0; k < player.Width; k++)
+                        {
+                            w.Write("T");
+                            i++;
+                            isThereAElement = true;
+                        }
+                    }
+                    if (!isThereAElement)
+                    {
+                        w.Write(".");
+                    }
+                    
+                }
+            }
+
+            w.Close();
+        }
+
      
         //es true si no quedan bolas en el tablero
         public bool GameOver()
