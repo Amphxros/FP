@@ -9,8 +9,12 @@ namespace PracticaFinal
     public enum RewardID
     {
         AddWidth,
+        LessWidth,
         AddBalls,
-        NextLevel
+        LessBlocks,
+        MorePrices,
+        NextLevel,
+        lastID
     };
     class Reward
     {

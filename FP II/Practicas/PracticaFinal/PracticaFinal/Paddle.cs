@@ -8,30 +8,18 @@ namespace PracticaFinal
 {
     class Paddle
     {
-        private Vector2D pos_;
-        private int vida_;
         private int initialWidth_;
         //get and sets the position
-        public Vector2D Position
-        {
-            get
-            {
-                return pos_;
-            }
-            set
-            {
-                pos_ = value;
-            }
-        }
-
+        public Vector2D Position { get; set; }
         //get and sets the direction
         public Vector2D Direction { get; set; }
+        public int Vida { get; set; }
 
         public int Width { get; set; }
         public Paddle(Vector2D pos, int vida, int width)
         {
-            pos_ = pos;
-            vida_ = vida;
+            Position = pos;
+            Vida = vida;
             Direction = new Vector2D();
             Width = width;
             initialWidth_ = width;
@@ -44,7 +32,7 @@ namespace PracticaFinal
         {
             for (int i = 0; i < Width; i++)
             {
-                Console.SetCursorPosition(pos_.getX() + i, pos_.getY());
+                Console.SetCursorPosition(Position.getX() + i, Position.getY());
                 Console.BackgroundColor = ConsoleColor.White;
                 Console.Write(" ");
             }
@@ -52,7 +40,7 @@ namespace PracticaFinal
         }
         public void Update()
         {
-            pos_.setX(pos_.getX() + Direction.getX());
+            Position.setX(Position.getX() + Direction.getX());
         }
 
         public void handleInput(char c)
@@ -73,7 +61,7 @@ namespace PracticaFinal
 
         public bool isDead()
         {
-            return vida_ <= 0;
+            return Vida <= 0;
         }
 
         public void resetWidth()
