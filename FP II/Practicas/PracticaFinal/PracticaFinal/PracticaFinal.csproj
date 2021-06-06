@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="Ball.cs" />
     <Compile Include="Bloque.cs" />
+    <Compile Include="Game.cs" />
     <Compile Include="ListaBloques.cs" />
     <Compile Include="ListaBolas.cs" />
     <Compile Include="ListaPremios.cs" />

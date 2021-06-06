@@ -217,7 +217,7 @@ namespace PracticaFinal
                         balls.getnEsimo(i).Position.getX() <= player.Position.getX() + player.Width)
                     {
                         balls.getnEsimo(i).ChangeY();
-                        Console.Beep();
+                       
                     }
                 }
 
@@ -276,6 +276,7 @@ namespace PracticaFinal
                         {
                             Ball b = new Ball(new Vector2D(width / 2, 3* height / 4));
                             balls.InsertaFin(b);
+                            player.Position.setX(width / 2 - player.Width / 2);
                             rst = true;
                         }
                         
