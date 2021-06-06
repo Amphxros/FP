@@ -1,21 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿//Rubio Bellon Amparo
+
+using System;
 
 namespace PracticaFinal
 {
     class Bloque
     {
-        private Vector2D pos_;
-        private int vida_;
-        ConsoleColor color_;
-        private int width_;
+        private int vida_; //num de golpes que les tienes que dar para destruir el bloque
+        ConsoleColor color_; //color del bloque
 
-        public Vector2D Position => pos_;
-        public int Width => width_;
+        private Vector2D pos_;
+        public Vector2D Position => pos_; //posicion
         
+        private int width_;
+        public int Width => width_; //tamaño del bloque
+        
+        //constructora
         public Bloque(Vector2D pos, int vida, ConsoleColor color, int width)
         {
             pos_ = pos;
@@ -24,7 +24,7 @@ namespace PracticaFinal
             width_ = width;
         }
         
-
+        //renderizado
         public void Render()
         {
             for(int i = 0; i < width_; i++)
@@ -36,6 +36,8 @@ namespace PracticaFinal
             }
         }
 
+        //en caso de colision con la pelota se llama a este metodo 
+        //devolverá true si este se tiene que destruir 
         public bool OnCollision()
         {
             vida_--;

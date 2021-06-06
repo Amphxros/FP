@@ -1,6 +1,6 @@
-﻿
+﻿//Rubio Bellon Amparo
+
 using System;
-using System.Text.RegularExpressions;
 using System.Globalization;
 using System.IO;
 
@@ -8,8 +8,10 @@ namespace PracticaFinal
 {
     class Game
     {
-        enum State { None, Play, Load, Save, Score, Top,Quit };
-        public static TextInfo Text = new CultureInfo("en-US", false).TextInfo;
+        enum State { None, Play, Load, Save, Score, Top,Quit }; //enum para los distintos estados
+        public static TextInfo Text = new CultureInfo("en-US", false).TextInfo; //para parsear strings->State
+        
+        //array de strings con informacion de los niveles
         string[] levels = {
         "Levels/level00.lvl",
         "Levels/level01.lvl",
@@ -20,6 +22,8 @@ namespace PracticaFinal
         //añadir mas niveles aqui
         };
 
+        //para los maxScores como necesito el usuario se usa este struct, 
+        //para scores individuales no es necesario ya que tienen un unico usuario 
        public struct Score
        {
             public string username;
@@ -27,11 +31,12 @@ namespace PracticaFinal
 
        }
 
-        //nivel a jugar y ultimo nivel desloqueado
-        int level = -1, maxLevel = 0;
-        int[] scores;
-        Score[] maxScores;
-        string user;
+        int level = -1, maxLevel = 0;  //nivel a jugar y ultimo nivel desloqueado
+        int[] scores;       //array de puntuacione propias
+        Score[] maxScores;  //array de puntuaciones maximas (globales)
+        string user;        //string de usuario actual
+
+        //constructora
         public Game() {
             level = -1;
             maxLevel = 0;
@@ -40,6 +45,8 @@ namespace PracticaFinal
             user = "";
             LoadMaxScores();
         }
+
+        //maneja el estado inicial (None) y va pidiendo acciones al jugador 
         State HandleState()
         {
             State s = State.None;
@@ -89,6 +96,7 @@ namespace PracticaFinal
 
         }
 
+        //"bucle principal" aqui segun el estado elegido se realiza una accion u otra
         public void Run()
         {
 
@@ -137,6 +145,7 @@ namespace PracticaFinal
 
             }
         }
+        //estado de "top" aqui se ven las puntuaciones maximas
         void TopState()
         {
             Console.SetCursorPosition(10, 2);
@@ -157,6 +166,7 @@ namespace PracticaFinal
             }
             Console.ReadKey();
         }
+        //aqui es el estado de jugar per se, se pide el nivel ajugar y si esta desbloqueado se pasará al runningState
         void PlayState()
         {
             Console.SetCursorPosition(10, 2);
@@ -169,10 +179,10 @@ namespace PracticaFinal
                 Console.Write(t[i] + " ");
             }
 
-
+            Console.ForegroundColor = ConsoleColor.White;
             //ponemos los niveles que se pueden superar
             for (int i = 0; i < levels.Length; i++)
-                {
+            {
                     Console.SetCursorPosition(10 + 3 * i, 4);
                     if (i <= maxLevel)
                     {
@@ -188,12 +198,21 @@ namespace PracticaFinal
                     Console.SetCursorPosition(10 + 3 * i, 5);
 
                     Console.Write(i);
-                }
+            }
 
                 Console.SetCursorPosition(10, 7);
+                Console.ForegroundColor = col[0];
                 Console.WriteLine("Controls:");
+                Console.ForegroundColor = col[1];
+
+                Console.SetCursorPosition(12, 9);
                 Console.WriteLine("<- & -> to move the paddle");
+                Console.ForegroundColor = col[2];
+
+                Console.SetCursorPosition(12, 10);
                 Console.WriteLine("P to pause the game");
+
+                Console.ResetColor();
                 Console.SetCursorPosition(10, 14);
                 do{
                     Console.Write("which level do you want to play? > ");
@@ -208,7 +227,7 @@ namespace PracticaFinal
 
             }
 
-       
+       //bucle principal del nivel en sí
         void RunningState(Tablero t)
         {
             t.Render();
@@ -264,7 +283,7 @@ namespace PracticaFinal
                 Console.WriteLine("Press any key to go to the main menu"); ;
                 Console.ReadKey();
             }
-            else
+            else if(t.GameWin())
             {
                 Console.SetCursorPosition(10, 10);
                 Console.WriteLine("G A M E W I N");
@@ -276,8 +295,17 @@ namespace PracticaFinal
                     maxLevel++;
 
                 Console.WriteLine("Press any key to go to the main menu"); ;
+                Console.ResetColor();
                 Console.ReadKey();
             }
+            else
+            {
+                Console.WriteLine("Press any key to go to the main menu"); ;
+                Console.ReadKey();
+
+            }
+
+
             if (scores[level] < t.Score)
             {
                 scores[level] = t.Score;
@@ -297,6 +325,7 @@ namespace PracticaFinal
 
         }
 
+        //en este estado se carga pide a cargar un usuario y se intenta cargar
         void LoadState()
             {
                 string username = "";
@@ -325,6 +354,7 @@ namespace PracticaFinal
 
             }
 
+        //muestra un mensaje de pausa y para despausar el juego
         void PauseState()
             {
             Console.SetCursorPosition(10, 10);   
@@ -345,6 +375,7 @@ namespace PracticaFinal
                     .White;
             }
 
+        //aqui se pueden ver tus puntuaciones propias de tu partida
         void ScoreState()
             {
                 Console.SetCursorPosition(10, 2);
@@ -364,6 +395,7 @@ namespace PracticaFinal
                 Console.ReadKey();
             }
 
+        // aqui se guarda las puntuaciones maximas(se llama a este metodo una vez terminada una partida si se hace record
         void SaveScores()
             {
                 StreamWriter w = new StreamWriter("maxScores.score");
@@ -377,7 +409,7 @@ namespace PracticaFinal
                 w.Close();
 
             }
-
+        //aqui se guarda un usuario name.usr con su ultimo nivel desbloqueado y sus puntuaciones propias
         void SaveUser(string name)
             {
                 StreamWriter w = new StreamWriter(name + ".usr");
@@ -399,6 +431,7 @@ namespace PracticaFinal
 
             }
 
+        //carga un usuario name.usr con sus puntuaciones y niveles desbloqueados
         void LoadUser(string name)
         {
             try
@@ -430,6 +463,7 @@ namespace PracticaFinal
             }
         }
 
+
         void LeeInput(ref char dir)
             {
                 if (Console.KeyAvailable)
@@ -450,6 +484,7 @@ namespace PracticaFinal
                     (Console.ReadKey(false)).KeyChar.ToString();
             }
 
+        //carga las puntuaciones maximas del archivo maxScores.score
         private void LoadMaxScores()
             {
                 try
